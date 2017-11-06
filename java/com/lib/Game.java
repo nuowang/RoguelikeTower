@@ -22,4 +22,5 @@ import android.app.Activity;
 
 public class Game extends Activity {
     public static Game instance;
+
 }
