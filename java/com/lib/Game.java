@@ -16,9 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.rogueliketower;
+package com.lib;
 
-import com.lib.Game;
+import android.app.Activity;
 
-public class RoguelikeTower extends Game {
+public class Game extends Activity {
+    public static Game instance;
 }
