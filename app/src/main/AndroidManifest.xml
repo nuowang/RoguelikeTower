@@ -27,7 +27,7 @@
 
         <activity
             android:label="@string/app_name"
-            android:name=".RoguelikeTower"
+            android:name="RoguelikeTower"
             android:screenOrientation="portrait">
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
