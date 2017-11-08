@@ -16,9 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-import android.app.Activity;
+import lib.Game;
 
-public class Game extends Activity {
-    public static Game instance;
-
+public class RoguelikeTower extends Game {
 }
