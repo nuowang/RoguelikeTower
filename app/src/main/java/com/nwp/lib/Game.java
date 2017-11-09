@@ -16,7 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-import lib.Game;
+package com.nwp.lib;
 
-public class RoguelikeTower extends Game {
+import android.app.Activity;
+
+public class Game extends Activity {
+    public static Game instance;
+
 }

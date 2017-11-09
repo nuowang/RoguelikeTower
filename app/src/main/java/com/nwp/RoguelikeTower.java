@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-import android.app.Activity;
+package com.nwp;
 
-public class Game extends Activity {
-    public static Game instance;
+import com.nwp.lib.Game;
 
+public class RoguelikeTower extends Game {
 }
