@@ -21,4 +21,6 @@ package com.nwp.rogueliketower;
 import com.nwp.lib.Game;
 
 public class RoguelikeTower extends Game {
+
+    //
 }
