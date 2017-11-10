@@ -22,5 +22,11 @@ import com.nwp.lib.Game;
 
 public class RoguelikeTower extends Game {
 
-    //
+    public RoguelikeTower() {
+
+    }
+
+    @Override
+    protected void onCreate() {}
+
 }
