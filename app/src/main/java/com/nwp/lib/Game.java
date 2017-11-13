@@ -23,7 +23,18 @@ import android.app.Activity;
 public class Game extends Activity {
     public static Game instance;
 
-    protected void onCreate() {}
+    public void onCreate() {}
 
+    public void onRestart() {}
+
+    public void onStart() {}
+
+    public void onResume(){}
+
+    public void onPause() {}
+
+    public void onStop() {}
+
+    public void onDestroy() {}
 
 }

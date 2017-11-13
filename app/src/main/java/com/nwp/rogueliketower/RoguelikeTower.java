@@ -27,6 +27,24 @@ public class RoguelikeTower extends Game {
     }
 
     @Override
-    protected void onCreate() {}
+    public void onCreate() {}
+
+    @Override
+    public void onRestart() {}
+
+    @Override
+    public void onStart() {}
+
+    @Override
+    public void onResume(){}
+
+    @Override
+    public void onPause() {}
+
+    @Override
+    public void onStop() {}
+
+    @Override
+    public void onDestroy() {}
 
 }
