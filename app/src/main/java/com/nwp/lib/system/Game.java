@@ -16,35 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.nwp.rogueliketower;
+package com.nwp.lib.system;
 
-import com.nwp.lib.system.Game;
+import android.app.Activity;
 
-public class RoguelikeTower extends Game {
+public class Game extends Activity {
+    public static Game instance;
 
-    public RoguelikeTower() {
-
-    }
-
-    @Override
     public void onCreate() {}
 
-    @Override
     public void onRestart() {}
 
-    @Override
     public void onStart() {}
 
-    @Override
     public void onResume(){}
 
-    @Override
     public void onPause() {}
 
-    @Override
     public void onStop() {}
 
-    @Override
     public void onDestroy() {}
 
 }

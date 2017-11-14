@@ -18,33 +18,6 @@
 
 package com.nwp.rogueliketower;
 
-import com.nwp.lib.system.Game;
-
-public class RoguelikeTower extends Game {
-
-    public RoguelikeTower() {
-
-    }
-
-    @Override
-    public void onCreate() {}
-
-    @Override
-    public void onRestart() {}
-
-    @Override
-    public void onStart() {}
-
-    @Override
-    public void onResume(){}
-
-    @Override
-    public void onPause() {}
-
-    @Override
-    public void onStop() {}
-
-    @Override
-    public void onDestroy() {}
+public class Assets {
 
 }
