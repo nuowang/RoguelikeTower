@@ -18,7 +18,7 @@
 
 package com.nwp.lib.gameplay;
 
-import com.nwp.lib.units.Gizmo;
+import com.nwp.lib.core.Gizmo;
 
 public class Tile extends Gizmo {
 }

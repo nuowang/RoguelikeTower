@@ -16,7 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.nwp.lib.algorithms;
+package com.nwp.lib.gameplay;
 
-public class Path {
+import android.app.Activity;
+
+public class Game extends Activity {
+    public static Game instance;
+
+    public void onCreate() {}
+
+    public void onRestart() {}
+
+    public void onStart() {}
+
+    public void onResume(){}
+
+    public void onPause() {}
+
+    public void onStop() {}
+
+    public void onDestroy() {}
+
 }

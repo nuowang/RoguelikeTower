@@ -16,25 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.nwp.lib.system;
+package com.nwp.lib.gameplay;
 
-import android.app.Activity;
+import com.nwp.lib.core.Container;
 
-public class Game extends Activity {
-    public static Game instance;
-
-    public void onCreate() {}
-
-    public void onRestart() {}
-
-    public void onStart() {}
-
-    public void onResume(){}
-
-    public void onPause() {}
-
-    public void onStop() {}
-
-    public void onDestroy() {}
-
+public class View extends Container {
 }
