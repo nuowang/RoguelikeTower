@@ -16,7 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.nwp.lib.elements;
+package com.nwp.lib.gameplay;
 
-public class Tile extends Element {
+import com.nwp.lib.units.Gizmo;
+
+public class Tile extends Gizmo {
 }

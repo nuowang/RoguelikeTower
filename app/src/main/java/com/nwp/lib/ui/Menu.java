@@ -18,5 +18,7 @@
 
 package com.nwp.lib.ui;
 
-public class Scene {
+import com.nwp.lib.units.Container;
+
+public class Menu extends Container {
 }

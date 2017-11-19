@@ -18,5 +18,7 @@
 
 package com.nwp.lib.ui;
 
-public class TitleScene extends Scene {
+import com.nwp.lib.units.Container;
+
+public class TitleScene extends Container {
 }

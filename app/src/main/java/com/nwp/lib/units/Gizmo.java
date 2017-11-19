@@ -16,7 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.nwp.lib;
+package com.nwp.lib.units;
 
+/**
+ * Gizmo is a general element. Most of the other objects in the game extend from Gizmo.
+ */
 public class Gizmo {
+
+    public boolean visible;
+    /**
+     * Gizmos with larger level values are displayed on top.
+     */
+    public int level;
+
+
+    public Gizmo() {}
+
 }

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.nwp.lib.elements;
+package com.nwp.lib.units;
 
-public class Character extends Tile {
+public class Container extends Gizmo {
 }

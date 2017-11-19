@@ -18,5 +18,5 @@
 
 package com.nwp.lib.gameplay;
 
-public class Path {
+public class Hero extends Tile {
 }
