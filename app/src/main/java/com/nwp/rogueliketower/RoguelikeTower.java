@@ -20,31 +20,68 @@ package com.nwp.rogueliketower;
 
 import com.nwp.lib.gameplay.Game;
 
-public class RoguelikeTower extends Game {
+import android.widget.ImageView;
+import android.app.ActionBar.LayoutParams;
+import android.os.Environment;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.widget.RelativeLayout;
+import android.app.Activity;
+import android.os.Bundle;
+
+public class RoguelikeTower extends Activity {
 
     public RoguelikeTower() {
 
     }
 
-    @Override
-    public void onCreate() {}
+    public void test() {
+        ImageView imageView = new ImageView(getApplicationContext());
+        LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        String path = Environment.getExternalStorageDirectory() + "/your folder name/image_name.bmp";
+        Bitmap image = BitmapFactory.decodeFile(path);
+        imageView.setImageBitmap(image);
+        //RelativeLayout rl = (RelativeLayout) findViewById(R.id.imageView);
+        //rl.addView(imageView, lp);
+
+    }
 
     @Override
-    public void onRestart() {}
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+        //test();
 
-    @Override
-    public void onStart() {}
+    }
 
-    @Override
-    public void onResume(){}
-
-    @Override
-    public void onPause() {}
-
-    @Override
-    public void onStop() {}
-
-    @Override
-    public void onDestroy() {}
+//    @Override
+//    public void onRestart() {
+//        super.onRestart();
+//    }
+//
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//    }
+//
+//    @Override
+//    public void onResume(){
+//        super.onResume();
+//    }
+//
+//    @Override
+//    public void onPause() {
+//        super.onPause();
+//    }
+//
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//    }
+//
+//    @Override
+//    public void onDestroy() {
+//        super.onDestroy();
+//    }
 
 }

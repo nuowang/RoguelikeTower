@@ -25,16 +25,28 @@ public class Game extends Activity {
 
     public void onCreate() {}
 
-    public void onRestart() {}
+    public void onRestart() {
+        super.onRestart();
+    }
 
-    public void onStart() {}
+    public void onStart() {
+        super.onStart();
+    }
 
-    public void onResume(){}
+    public void onResume(){
+        super.onResume();
+    }
 
-    public void onPause() {}
+    public void onPause() {
+        super.onPause();
+    }
 
-    public void onStop() {}
+    public void onStop() {
+        super.onStop();
+    }
 
-    public void onDestroy() {}
+    public void onDestroy() {
+        super.onDestroy();
+    }
 
 }
