@@ -19,8 +19,17 @@
 package com.nwp.lib.gameplay;
 
 import android.app.Activity;
+import android.opengl.GLSurfaceView;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+import android.view.MotionEvent;
+import android.view.View;
 
-public class Game extends Activity {
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
+
+@RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
+public class Game extends Activity implements GLSurfaceView.Renderer, android.view.View.OnTouchListener {
     public static Game instance;
 
     public void onCreate() {}
@@ -49,4 +58,23 @@ public class Game extends Activity {
         super.onDestroy();
     }
 
+    @Override
+    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+
+    }
+
+    @Override
+    public void onSurfaceChanged(GL10 gl, int width, int height) {
+
+    }
+
+    @Override
+    public void onDrawFrame(GL10 gl) {
+
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        return false;
+    }
 }
