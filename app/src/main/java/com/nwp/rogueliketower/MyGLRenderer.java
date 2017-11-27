@@ -1,0 +1,41 @@
+/*
+ * Roguelike Tower
+ * Copyright (C) 2017 Nuo Wang
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
+package com.nwp.rogueliketower;
+
+import android.opengl.GLES20;
+import android.opengl.GLSurfaceView;
+
+import javax.microedition.khronos.opengles.GL10;
+
+public class MyGLRenderer implements GLSurfaceView.Renderer {
+
+    public void onSurfaceCreated(GL10 unused, javax.microedition.khronos.egl.EGLConfig config) {
+        // Set the background frame color
+        GLES20.glClearColor(0.0f, 3.0f, 0.0f, 1.0f);
+    }
+
+    public void onDrawFrame(GL10 unused) {
+        // Redraw background color
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+    }
+
+    public void onSurfaceChanged(GL10 unused, int width, int height) {
+        GLES20.glViewport(0, 0, width, height);
+    }
+}

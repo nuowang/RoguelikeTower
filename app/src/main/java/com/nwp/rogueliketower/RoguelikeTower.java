@@ -20,37 +20,23 @@ package com.nwp.rogueliketower;
 
 import com.nwp.lib.gameplay.Game;
 
-import android.widget.ImageView;
-import android.app.ActionBar.LayoutParams;
-import android.os.Environment;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.widget.RelativeLayout;
-import android.app.Activity;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 
-public class RoguelikeTower extends Activity {
+public class RoguelikeTower extends Game {
 
-    public RoguelikeTower() {
-
-    }
-
-    public void test() {
-        ImageView imageView = new ImageView(getApplicationContext());
-        LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        String path = Environment.getExternalStorageDirectory() + "/your folder name/image_name.bmp";
-        Bitmap image = BitmapFactory.decodeFile(path);
-        imageView.setImageBitmap(image);
-        //RelativeLayout rl = (RelativeLayout) findViewById(R.id.imageView);
-        //rl.addView(imageView, lp);
-
-    }
+    private GLSurfaceView mGLView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-        //test();
+
+        // For android library imaging rendering
+        // setContentView(R.layout.main);
+
+        // Create a GLSurfaceView instance and set it as the ContentView for this Activity.
+        mGLView = new MyGLSurfaceView(this);
+        setContentView(mGLView);
 
     }
 
