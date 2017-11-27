@@ -1,6 +1,6 @@
 /*
  * Roguelike Tower
- * Copyright (C) 2017 Nuo Wang
+ * Copyright (C) 2017 NWP
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,9 +25,17 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class MyGLRenderer implements GLSurfaceView.Renderer {
 
+    private Triangle mTriangle;
+    private Square mSquare;
+
     public void onSurfaceCreated(GL10 unused, javax.microedition.khronos.egl.EGLConfig config) {
         // Set the background frame color
         GLES20.glClearColor(0.0f, 3.0f, 0.0f, 1.0f);
+
+        // initialize a triangle
+        mTriangle = new Triangle();
+        // initialize a square
+        mSquare = new Square();
     }
 
     public void onDrawFrame(GL10 unused) {
