@@ -19,13 +19,14 @@
 package com.nwp.rogueliketower;
 
 import com.nwp.lib.gameplay.Game;
+import com.nwp.lib.gles.MyGLSurfaceView;
 
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 
 public class RoguelikeTower extends Game {
 
-    private GLSurfaceView mGLView;
+    public GLSurfaceView mGLView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

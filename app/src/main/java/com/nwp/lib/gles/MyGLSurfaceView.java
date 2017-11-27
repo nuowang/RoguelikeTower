@@ -16,12 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.nwp.rogueliketower;
+package com.nwp.lib.gles;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 
-class MyGLSurfaceView extends GLSurfaceView {
+import com.nwp.lib.gles.MyGLRenderer;
+
+public class MyGLSurfaceView extends GLSurfaceView {
 
     private final MyGLRenderer mRenderer;
 

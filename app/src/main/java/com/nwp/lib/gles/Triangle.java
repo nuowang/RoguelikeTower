@@ -16,9 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.nwp.rogueliketower;
+package com.nwp.lib.gles;
 
 import android.opengl.GLES20;
+
+import com.nwp.lib.gles.MyGLRenderer;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
