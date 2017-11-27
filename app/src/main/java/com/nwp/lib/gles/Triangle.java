@@ -27,6 +27,7 @@ import com.nwp.lib.gles.MyGLRenderer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.util.Random;
 
 public class Triangle {
 
@@ -66,6 +67,19 @@ public class Triangle {
     float color[] = { 0.63671875f, 0.76953125f, 0.22265625f, 1.0f };
 
     public Triangle() {
+        // Randomize triangle shape and color every time it is drawn.
+        Random rand = new Random();
+        triangleCoords[0] = rand.nextFloat() * 4 - 2;
+        triangleCoords[1] = rand.nextFloat() * 4 - 2;
+        triangleCoords[3] = triangleCoords[0] + rand.nextFloat()*0.8f - 0.4f;
+        triangleCoords[4] = triangleCoords[1] + rand.nextFloat()*0.8f - 0.4f;
+        triangleCoords[6] = triangleCoords[0] + rand.nextFloat()*0.8f - 0.4f;
+        triangleCoords[7] = triangleCoords[1] + rand.nextFloat()*0.8f - 0.4f;
+        color[0] = rand.nextFloat();
+        color[1] = rand.nextFloat();
+        color[2] = rand.nextFloat();
+        color[3] = rand.nextFloat();
+
         // initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(
                 // (number of coordinate values * 4 bytes per float)
@@ -98,7 +112,6 @@ public class Triangle {
     }
 
     public void draw() {
-
         // Add program to OpenGL ES environment
         GLES20.glUseProgram(mProgram);
 

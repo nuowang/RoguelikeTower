@@ -25,27 +25,36 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class MyGLRenderer implements GLSurfaceView.Renderer {
 
-    private Triangle mTriangle;
+    private Triangle[] mTriangle = new Triangle[1000];
     private Square mSquare;
 
     public void onSurfaceCreated(GL10 unused, javax.microedition.khronos.egl.EGLConfig config) {
         // Set the background frame color
-        GLES20.glClearColor(0.0f, 3.0f, 0.0f, 1.0f);
+        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
         // initialize a triangle
-        mTriangle = new Triangle();
+        //mTriangle = new Triangle();
+        for (int i = 0; i < 1000; i++) {
+            mTriangle[i] = new Triangle();
+        }
         // initialize a square
         mSquare = new Square();
+
     }
 
     public void onDrawFrame(GL10 unused) {
         // Redraw background color
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-        mTriangle.draw();
+        for (int i = 0; i < 1000; i++) {
+            mTriangle[i].draw();
+        }
+
+
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height) {
         GLES20.glViewport(0, 0, width, height);
+
     }
 
     public static int loadShader(int type, String shaderCode){
