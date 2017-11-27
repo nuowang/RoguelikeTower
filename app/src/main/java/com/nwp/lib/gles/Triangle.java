@@ -18,6 +18,8 @@
 
 package com.nwp.lib.gles;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
 
 import com.nwp.lib.gles.MyGLRenderer;
@@ -35,6 +37,7 @@ public class Triangle {
                     "void main() {" +
                     "  gl_Position = vPosition;" +
                     "}";
+
 
     private final String fragmentShaderCode =
             "precision mediump float;" +
@@ -61,7 +64,6 @@ public class Triangle {
 
     // Set color with red, green, blue and alpha (opacity) values
     float color[] = { 0.63671875f, 0.76953125f, 0.22265625f, 1.0f };
-
 
     public Triangle() {
         // initialize vertex byte buffer for shape coordinates
@@ -96,6 +98,7 @@ public class Triangle {
     }
 
     public void draw() {
+
         // Add program to OpenGL ES environment
         GLES20.glUseProgram(mProgram);
 

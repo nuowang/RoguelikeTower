@@ -33,7 +33,7 @@ public class RoguelikeTower extends Game {
         super.onCreate(savedInstanceState);
 
         // For android library imaging rendering
-        // setContentView(R.layout.main);
+        setContentView(R.layout.main);
 
         // Create a GLSurfaceView instance and set it as the ContentView for this Activity.
         mGLView = new MyGLSurfaceView(this);
