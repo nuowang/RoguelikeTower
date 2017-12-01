@@ -34,7 +34,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         // initialize a triangle
         //mTriangle = new Triangle();
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 1; i++) {
             mTriangle[i] = new Triangle();
         }
         // initialize a square
