@@ -78,5 +78,4 @@ public class RoguelikeTower extends Game {
         super.onPause();
         mGLSurfaceView.onPause();
     }
-
 }
