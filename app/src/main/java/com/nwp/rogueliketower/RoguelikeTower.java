@@ -19,7 +19,7 @@
 package com.nwp.rogueliketower;
 
 import com.nwp.lib.gameplay.Game;
-import com.nwp.lib.gles.MyGLRenderer;
+import com.nwp.lib.gles.MyGLRenderer3;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -51,7 +51,7 @@ public class RoguelikeTower extends Game {
             mGLSurfaceView.setEGLContextClientVersion(2);
 
             // Set the renderer to our demo renderer, defined below.
-            mGLSurfaceView.setRenderer(new MyGLRenderer());
+            mGLSurfaceView.setRenderer(new MyGLRenderer3());
         }
         else
         {
