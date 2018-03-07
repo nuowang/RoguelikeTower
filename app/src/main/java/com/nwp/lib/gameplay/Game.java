@@ -32,7 +32,7 @@ import javax.microedition.khronos.opengles.GL10;
 public class Game extends Activity implements GLSurfaceView.Renderer, android.view.View.OnTouchListener {
     public static Game instance;
 
-    public void onCreate() {}
+    public void onCreate() throws Exception {}
 
     public void onRestart() {
         super.onRestart();
