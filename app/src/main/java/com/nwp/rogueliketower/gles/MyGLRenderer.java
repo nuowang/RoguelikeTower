@@ -16,7 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.nwp.lib.gles;
+package com.nwp.rogueliketower.gles;
+
+import android.opengl.GLES20;
+import android.opengl.GLSurfaceView;
+import android.opengl.Matrix;
+import android.os.SystemClock;
+import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -25,15 +31,9 @@ import java.nio.FloatBuffer;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import android.opengl.GLES20;
-import android.opengl.GLSurfaceView;
-import android.opengl.Matrix;
-import android.os.SystemClock;
-import android.util.Log;
-
 public class MyGLRenderer implements GLSurfaceView.Renderer {
     /** Used for debug logs. */
-    private static final String TAG = "LessonTwoRenderer";
+    private static final String TAG = "Renderer";
 
     /**
      * Store the model matrix. This matrix is used to move models from object space (where each model can be thought

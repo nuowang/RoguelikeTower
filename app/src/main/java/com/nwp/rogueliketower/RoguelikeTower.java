@@ -18,20 +18,27 @@
 
 package com.nwp.rogueliketower;
 
-import com.nwp.lib.gameplay.Game;
-import com.nwp.lib.gles.MyGLRenderer3;
+import com.nwp.rogueliketower.gles.MyGLRenderer;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
+import android.view.MotionEvent;
+import android.view.View;
 
-public class RoguelikeTower extends Game {
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
+
+@RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
+public class RoguelikeTower extends Activity implements GLSurfaceView.Renderer, View.OnTouchListener {
     /** A reference to the game's graphical interface. */
     private GLSurfaceView gameView;
 
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         gameView = new GLSurfaceView(this);
@@ -45,7 +52,7 @@ public class RoguelikeTower extends Game {
             // Request an OpenGL ES 2.0 compatible context.
             gameView.setEGLContextClientVersion(2);
             // Set the renderer.
-            gameView.setRenderer(new MyGLRenderer3());
+            gameView.setRenderer(new MyGLRenderer());
         }
         else {
             // Currently, ES 1 is not supported.
@@ -56,19 +63,47 @@ public class RoguelikeTower extends Game {
         setContentView(gameView);
     }
 
-    @Override
-    public void onResume()
-    {
-        // The activity must call the GL surface view's onResume() on activity onResume().
+    public void onRestart() {
+        super.onRestart();
+    }
+
+    public void onStart() {
+        super.onStart();
+    }
+
+    public void onResume(){
         super.onResume();
-        gameView.onResume();
+    }
+
+    public void onPause() {
+        super.onPause();
+    }
+
+    public void onStop() {
+        super.onStop();
+    }
+
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     @Override
-    public void onPause()
-    {
-        // The activity must call the GL surface view's onPause() on activity onPause().
-        super.onPause();
-        gameView.onPause();
+    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+
+    }
+
+    @Override
+    public void onSurfaceChanged(GL10 gl, int width, int height) {
+
+    }
+
+    @Override
+    public void onDrawFrame(GL10 gl) {
+
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        return false;
     }
 }

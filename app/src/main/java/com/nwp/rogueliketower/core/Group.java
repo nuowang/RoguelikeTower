@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.nwp.lib.core;
+package com.nwp.rogueliketower.core;
 
 public class Group extends Gizmo {
 }
