@@ -294,95 +294,42 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mCubeNormals.put(cubeNormalData).position(0);
     }
 
-    protected String getVertexShader()
-    {
-        // TODO: Explain why we normalize the vectors, explain some of the vector math behind it all. Explain what is eye space.
+    protected String getVertexShader() {
         final String vertexShader =
-                "uniform mat4 u_MVPMatrix;      \n"		// A constant representing the combined model/view/projection matrix.
-                        + "uniform mat4 u_MVMatrix;       \n"		// A constant representing the combined model/view matrix.
-                        + "uniform vec3 u_LightPos;       \n"	    // The position of the light in eye space.
-
-                        + "attribute vec4 a_Position;     \n"		// Per-vertex position information we will pass in.
-                        + "attribute vec4 a_Color;        \n"		// Per-vertex color information we will pass in.
-                        + "attribute vec3 a_Normal;       \n"		// Per-vertex normal information we will pass in.
-
-                        + "varying vec4 v_Color;          \n"		// This will be passed into the fragment shader.
-
-                        + "void main()                    \n" 	// The entry point for our vertex shader.
-                        + "{                              \n"
-                        // Transform the vertex into eye space.
-                        + "   vec3 modelViewVertex = vec3(u_MVMatrix * a_Position);              \n"
-                        // Transform the normal's orientation into eye space.
-                        + "   vec3 modelViewNormal = vec3(u_MVMatrix * vec4(a_Normal, 0.0));     \n"
-                        // Will be used for attenuation.
-                        + "   float distance = length(u_LightPos - modelViewVertex);             \n"
-                        // Get a lighting direction vector from the light to the vertex.
-                        + "   vec3 lightVector = normalize(u_LightPos - modelViewVertex);        \n"
-                        // Calculate the dot product of the light vector and vertex normal. If the normal and light vector are
-                        // pointing in the same direction then it will get max illumination.
-                        + "   float diffuse = max(dot(modelViewNormal, lightVector), 0.1);       \n"
-                        // Attenuate the light based on distance.
-                        + "   diffuse = diffuse * (1.0 / (1.0 + (0.25 * distance * distance)));  \n"
-                        // Multiply the color by the illumination level. It will be interpolated across the triangle.
-                        + "   v_Color = a_Color * diffuse;                                       \n"
-                        // gl_Position is a special variable used to store the final position.
-                        // Multiply the vertex by the matrix to get the final point in normalized screen coordinates.
-                        + "   gl_Position = u_MVPMatrix * a_Position;                            \n"
-                        + "}                                                                     \n";
-
+        "uniform mat4 u_MVPMatrix;                    \n" +  // A constant representing the combined model/view/projection matrix.
+        "attribute vec4 a_Position;                   \n" +  // Per-vertex position information we will pass in.
+        "attribute vec4 a_Color;                      \n" +  // Per-vertex color information we will pass in.
+        "varying vec4 v_Color;                        \n" +  // This will be passed into the fragment shader.
+        "void main() {                                \n" +
+        "    v_Color = a_Color;                       \n" +
+        "    gl_Position = u_MVPMatrix * a_Position;  \n" +
+        "}                                            \n";
         return vertexShader;
     }
 
-    protected String getFragmentShader()
-    {
+    protected String getFragmentShader() {
         final String fragmentShader =
-                "precision mediump float;       \n"		// Set the default precision to medium. We don't need as high of a
-                        // precision in the fragment shader.
-                        + "varying vec4 v_Color;          \n"		// This is the color from the vertex shader interpolated across the
-                        // triangle per fragment.
-                        + "void main()                    \n"		// The entry point for our fragment shader.
-                        + "{                              \n"
-                        + "   gl_FragColor = v_Color;     \n"		// Pass the color directly through the pipeline.
-                        + "}                              \n";
+        "precision mediump float;     \n" +  // Set precision to medium. No need for high precision in the fragment shader.
+        "varying vec4 v_Color;        \n" +  // This is the color from the vertex shader interpolated across the triangle per fragment.
+        "void main() {                \n" +
+        "    gl_FragColor = v_Color;  \n" +
+        "}                            \n";
 
         return fragmentShader;
     }
 
     @Override
-    public void onSurfaceCreated(GL10 glUnused, EGLConfig config)
-    {
+    public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
         // Set the background clear color to black.
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-
-        // Use culling to remove back faces.
+        // Cull back faces.
         GLES20.glEnable(GLES20.GL_CULL_FACE);
-
-        // Enable depth testing
+        // Fragments with smaller z are displayed in front.
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
-        // Position the eye in front of the origin.
-        final float eyeX = 0.0f;
-        final float eyeY = 0.0f;
-        final float eyeZ = -0.5f;
-
-        // We are looking toward the distance
-        final float lookX = 0.0f;
-        final float lookY = 0.0f;
-        final float lookZ = -5.0f;
-
-        // Set our up vector. This is where our head would be pointing were we holding the camera.
-        final float upX = 0.0f;
-        final float upY = 1.0f;
-        final float upZ = 0.0f;
-
-        // Set the view matrix. This matrix can be said to represent the camera position.
-        // NOTE: In OpenGL 1, a ModelView matrix is used, which is a combination of a model and
-        // view matrix. In OpenGL 2, we can keep track of these matrices separately if we choose.
-        Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);
-
+        // Shaders.
         final String vertexShader = getVertexShader();
         final String fragmentShader = getFragmentShader();
-
         final int vertexShaderHandle = compileShader(GLES20.GL_VERTEX_SHADER, vertexShader);
         final int fragmentShaderHandle = compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader);
 
@@ -610,12 +557,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
      * @param attributes Attributes that need to be bound to the program.
      * @return An OpenGL handle to the program.
      */
-    private int createAndLinkProgram(final int vertexShaderHandle, final int fragmentShaderHandle, final String[] attributes)
-    {
+    private int createAndLinkProgram(final int vertexShaderHandle, final int fragmentShaderHandle,
+                                     final String[] attributes) {
         int programHandle = GLES20.glCreateProgram();
 
-        if (programHandle != 0)
-        {
+        if (programHandle != 0) {
             // Bind the vertex shader to the program.
             GLES20.glAttachShader(programHandle, vertexShaderHandle);
 
@@ -623,11 +569,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             GLES20.glAttachShader(programHandle, fragmentShaderHandle);
 
             // Bind attributes
-            if (attributes != null)
-            {
+            if (attributes != null) {
                 final int size = attributes.length;
-                for (int i = 0; i < size; i++)
-                {
+                for (int i = 0; i < size; i++) {
                     GLES20.glBindAttribLocation(programHandle, i, attributes[i]);
                 }
             }
