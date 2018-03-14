@@ -327,12 +327,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // Fragments with smaller z are displayed in front.
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
-        // Shaders.
+        // Make rendering program.
         final String vertexShader = getVertexShader();
         final String fragmentShader = getFragmentShader();
         final int vertexShaderHandle = compileShader(GLES20.GL_VERTEX_SHADER, vertexShader);
         final int fragmentShaderHandle = compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader);
-
         mPerVertexProgramHandle = createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle,
                 new String[] {"a_Position",  "a_Color", "a_Normal"});
 
@@ -568,7 +567,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             // Bind the fragment shader to the program.
             GLES20.glAttachShader(programHandle, fragmentShaderHandle);
 
-            // Bind attributes
+            // Bind attributes.
             if (attributes != null) {
                 final int size = attributes.length;
                 for (int i = 0; i < size; i++) {
@@ -592,8 +591,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             }
         }
 
-        if (programHandle == 0)
-        {
+        if (programHandle == 0) {
             throw new RuntimeException("Error creating program.");
         }
 
