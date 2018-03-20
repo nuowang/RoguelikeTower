@@ -18,7 +18,7 @@
 
 package com.nwp.rogueliketower;
 
-import com.nwp.rogueliketower.gles.MyGLRenderer;
+import com.nwp.rogueliketower.gles.GameRenderer;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -52,7 +52,7 @@ public class RoguelikeTower extends Activity implements GLSurfaceView.Renderer, 
             // Request an OpenGL ES 2.0 compatible context.
             gameView.setEGLContextClientVersion(2);
             // Set the renderer.
-            gameView.setRenderer(new MyGLRenderer());
+            gameView.setRenderer(new GameRenderer());
         }
         else {
             // Currently, ES 1 is not supported.
