@@ -51,11 +51,6 @@ public class GameRenderer implements Renderer {
     /** Allocate storage for the final combined matrix. This will be passed into the shader program. */
     private float[] mMVPMatrix = new float[16];
 
-    /**
-     * Stores a copy of the model matrix specifically for the light position.
-     */
-    private float[] mLightModelMatrix = new float[16];
-
     /** Store our model data in a float buffer. */
     private final FloatBuffer mCubePositions;
     private final FloatBuffer mCubeColors;
@@ -65,9 +60,6 @@ public class GameRenderer implements Renderer {
 
     /** This will be used to pass in the modelview matrix. */
     private int mMVMatrixHandle;
-
-    /** This will be used to pass in the light position. */
-    private int mLightPosHandle;
 
     /** This will be used to pass in model position information. */
     private int mPositionHandle;
@@ -84,21 +76,8 @@ public class GameRenderer implements Renderer {
     /** Size of the color data in elements. */
     private final int mColorDataSize = 4;
 
-    /** Used to hold a light centered on the origin in model space. We need a 4th coordinate so we can get translations to work when
-     *  we multiply this by our transformation matrices. */
-    private final float[] mLightPosInModelSpace = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
-
-    /** Used to hold the current position of the light in world space (after transformation via model matrix). */
-    private final float[] mLightPosInWorldSpace = new float[4];
-
-    /** Used to hold the transformed position of the light in eye space (after transformation via modelview matrix) */
-    private final float[] mLightPosInEyeSpace = new float[4];
-
     /** This is a handle to our per-vertex cube shading program. */
     private int mPerVertexProgramHandle;
-
-    /** This is a handle to our light point program. */
-    private int mPointProgramHandle;
 
     /**
      * Initialize the model data.
@@ -224,7 +203,7 @@ public class GameRenderer implements Renderer {
     }
 
     @Override
-    public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
+    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         // Set the background clear color to black.
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         // Cull back faces.
@@ -232,64 +211,35 @@ public class GameRenderer implements Renderer {
         // Fragments with smaller z are displayed in front.
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
-        // The original code here:
-        // Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);
-        // But now I use:
-        mViewMatrix[0*4+0] = 1;
-        mViewMatrix[1*4+1] = 1;
-        mViewMatrix[2*4+2] = 1;
-        mViewMatrix[3*4+3] = 1;
-
         // Make rendering program.
         final String vertexShader =
-            "uniform mat4 u_MVPMatrix;                    \n" +  // A constant representing the combined model/view/projection matrix.
-            "attribute vec4 a_Position;                   \n" +  // Per-vertex position information we will pass in.
-            "attribute vec4 a_Color;                      \n" +  // Per-vertex color information we will pass in.
-            "varying vec4 v_Color;                        \n" +  // This will be passed into the fragment shader.
+            "uniform mat4 u_MVPMatrix;                    \n" +
+            "attribute vec4 a_Position;                   \n" +
+            "attribute vec4 a_Color;                      \n" +
+            "varying vec4 v_Color;                        \n" +
             "void main() {                                \n" +
             "    v_Color = a_Color;                       \n" +
             "    gl_Position = u_MVPMatrix * a_Position;  \n" +
             "}                                            \n";
         final String fragmentShader =
-            "precision mediump float;     \n" +  // Set precision to medium. No need for high precision in the fragment shader.
-            "varying vec4 v_Color;        \n" +  // This is the color from the vertex shader interpolated across the triangle per fragment.
-            "void main() {                \n" +
-            "    gl_FragColor = v_Color;  \n" +
-            "}                            \n";
+            "precision mediump float;                     \n" +
+            "varying vec4 v_Color;                        \n" +
+            "void main() {                                \n" +
+            "    gl_FragColor = v_Color;                  \n" +
+            "}                                            \n";
         final int vertexShaderHandle = compileShader(GLES20.GL_VERTEX_SHADER, vertexShader);
         final int fragmentShaderHandle = compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader);
-        mPerVertexProgramHandle = makeProgram(vertexShaderHandle, fragmentShaderHandle,
-            new String[] {"a_Position",  "a_Color", "a_Normal"});
-
-        // Define a simple shader program for our point.
-        final String pointVertexShader =
-            "uniform mat4 u_MVPMatrix;                  \n" +
-            "attribute vec4 a_Position;                 \n" +
-            "void main() {                              \n" +
-            "   gl_Position = u_MVPMatrix * a_Position; \n" +
-            "   gl_PointSize = 5.0;                     \n" +
-            "}                                          \n";
-
-        final String pointFragmentShader =
-            "precision mediump float;                   \n" +
-            "void main() {                              \n" +
-            "   gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n" +
-            "}                                          \n";
-
-        final int pointVertexShaderHandle = compileShader(GLES20.GL_VERTEX_SHADER, pointVertexShader);
-        final int pointFragmentShaderHandle = compileShader(GLES20.GL_FRAGMENT_SHADER, pointFragmentShader);
-        mPointProgramHandle = makeProgram(pointVertexShaderHandle, pointFragmentShaderHandle,
-                new String[] {"a_Position"});
+        final String[] attributes = {"a_Position",  "a_Color", "a_Normal"};
+        mPerVertexProgramHandle = makeProgram(vertexShaderHandle, fragmentShaderHandle, attributes);
     }
 
     @Override
-    public void onSurfaceChanged(GL10 glUnused, int width, int height)
-    {
-        // Set the OpenGL viewport to the same size as the surface.
+    public void onSurfaceChanged(GL10 gl, int width, int height) {
+        // Set the OpenGL viewport to the same size as the screen.
         GLES20.glViewport(0, 0, width, height);
 
-        // Create a new perspective projection matrix. The height will stay the same
-        // while the width will vary as per aspect ratio.
+        // Scale the shapes to keep their original aspect ratio given the aspect ratio of the device screen.
+        // The height of the shapes will stay the same while the width varies.
         final float ratio = (float) width / height;
         final float left = -ratio;
         final float right = ratio;
@@ -302,7 +252,7 @@ public class GameRenderer implements Renderer {
     }
 
     @Override
-    public void onDrawFrame(GL10 glUnused)
+    public void onDrawFrame(GL10 gl)
     {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
@@ -316,18 +266,8 @@ public class GameRenderer implements Renderer {
         // Set program handles for cube drawing.
         mMVPMatrixHandle = GLES20.glGetUniformLocation(mPerVertexProgramHandle, "u_MVPMatrix");
         mMVMatrixHandle = GLES20.glGetUniformLocation(mPerVertexProgramHandle, "u_MVMatrix");
-        mLightPosHandle = GLES20.glGetUniformLocation(mPerVertexProgramHandle, "u_LightPos");
         mPositionHandle = GLES20.glGetAttribLocation(mPerVertexProgramHandle, "a_Position");
         mColorHandle = GLES20.glGetAttribLocation(mPerVertexProgramHandle, "a_Color");
-
-        // Calculate position of the light. Rotate and then push into the distance.
-        Matrix.setIdentityM(mLightModelMatrix, 0);
-        Matrix.translateM(mLightModelMatrix, 0, 0.0f, 0.0f, -5.0f);
-        Matrix.rotateM(mLightModelMatrix, 0, angleInDegrees, 0.0f, 1.0f, 0.0f);
-        Matrix.translateM(mLightModelMatrix, 0, 0.0f, 0.0f, 2.0f);
-
-        Matrix.multiplyMV(mLightPosInWorldSpace, 0, mLightModelMatrix, 0, mLightPosInModelSpace, 0);
-        Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightPosInWorldSpace, 0);
 
         // Draw some cubes.
         Matrix.setIdentityM(mModelMatrix, 0);
@@ -353,13 +293,10 @@ public class GameRenderer implements Renderer {
         Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, -5.0f);
         Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 1.0f, 1.0f, 0.0f);
         drawTile();
-
-        // Draw a point to indicate the light.
-        GLES20.glUseProgram(mPointProgramHandle);
     }
 
     /**
-     * Draws a cube.
+     * Draw a square/tile.
      */
     private void drawTile()
     {
@@ -377,22 +314,15 @@ public class GameRenderer implements Renderer {
 
         GLES20.glEnableVertexAttribArray(mColorHandle);
 
-        // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
-        // (which currently contains model * view).
-        Matrix.multiplyMM(mMVPMatrix, 0, mViewMatrix, 0, mModelMatrix, 0);
-
         // Pass in the modelview matrix.
         GLES20.glUniformMatrix4fv(mMVMatrixHandle, 1, false, mMVPMatrix, 0);
 
         // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix
         // (which now contains model * view * projection).
-        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mMVPMatrix, 0);
+        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mModelMatrix, 0);
 
         // Pass in the combined matrix.
         GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mMVPMatrix, 0);
-
-        // Pass in the light position in eye space.
-        GLES20.glUniform3f(mLightPosHandle, mLightPosInEyeSpace[0], mLightPosInEyeSpace[1], mLightPosInEyeSpace[2]);
 
         // Draw the cube.
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 36);
