@@ -245,10 +245,14 @@ public class GameRenderer implements Renderer {
         final float right = ratio;
         final float bottom = -1.0f;
         final float top = 1.0f;
+        // Clipping parameters.
         final float near = 1.0f;
         final float far = 10.0f;
 
-        Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
+        // Orthogonal view.
+        Matrix.orthoM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
+        // Perspective view. Not used here.
+        //Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
     }
 
     @Override

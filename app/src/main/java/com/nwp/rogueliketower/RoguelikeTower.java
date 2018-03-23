@@ -31,11 +31,8 @@ import android.support.annotation.RequiresApi;
 import android.view.MotionEvent;
 import android.view.View;
 
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
-
 @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
-public class RoguelikeTower extends Activity implements GLSurfaceView.Renderer, View.OnTouchListener {
+public class RoguelikeTower extends Activity implements View.OnTouchListener {
     /** A reference to the game's graphical interface. */
     private GLSurfaceView gameView;
 
@@ -85,21 +82,6 @@ public class RoguelikeTower extends Activity implements GLSurfaceView.Renderer, 
 
     public void onDestroy() {
         super.onDestroy();
-    }
-
-    @Override
-    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-
-    }
-
-    @Override
-    public void onSurfaceChanged(GL10 gl, int width, int height) {
-
-    }
-
-    @Override
-    public void onDrawFrame(GL10 gl) {
-
     }
 
     @Override
