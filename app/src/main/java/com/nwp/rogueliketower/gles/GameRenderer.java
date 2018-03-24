@@ -18,11 +18,22 @@
 
 package com.nwp.rogueliketower.gles;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView.Renderer;
+import android.opengl.GLUtils;
 import android.opengl.Matrix;
 import android.os.SystemClock;
 import android.util.Log;
+
+import com.nwp.rogueliketower.R;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -32,6 +43,8 @@ import javax.microedition.khronos.opengles.GL10;
 public class GameRenderer implements Renderer {
     /** Used for debug logs. */
     private static final String TAG = "Renderer";
+
+    private final Context mActivityContext;
 
     /**
      * Store the model matrix. This matrix is used to move models from object space (where each model can be thought
@@ -54,18 +67,25 @@ public class GameRenderer implements Renderer {
     /** Store our model data in a float buffer. */
     private final FloatBuffer mCubePositions;
     private final FloatBuffer mCubeColors;
+    private final FloatBuffer mCubeTextureCoordinates;
 
     /** This will be used to pass in the transformation matrix. */
     private int mMVPMatrixHandle;
-
-    /** This will be used to pass in the modelview matrix. */
-    private int mMVMatrixHandle;
 
     /** This will be used to pass in model position information. */
     private int mPositionHandle;
 
     /** This will be used to pass in model color information. */
     private int mColorHandle;
+
+    /** This will be used to pass in model texture coordinate information. */
+    private int mTextureCoordinateHandle;
+
+    /** This is a handle to our texture data. */
+    private int mTextureDataHandle;
+
+    /** This will be used to pass in the texture. */
+    private int mTextureUniformHandle;
 
     /** How many bytes per float. */
     private final int mBytesPerFloat = 4;
@@ -76,13 +96,18 @@ public class GameRenderer implements Renderer {
     /** Size of the color data in elements. */
     private final int mColorDataSize = 4;
 
+    /** Size of the texture coordinate data in elements. */
+    private final int mTextureCoordinateDataSize = 2;
+
     /** This is a handle to our per-vertex cube shading program. */
-    private int mPerVertexProgramHandle;
+    private int mProgramHandle;
 
     /**
      * Initialize the model data.
      */
-    public GameRenderer() {
+    public GameRenderer(final Context activityContext) {
+        mActivityContext = activityContext;
+
         // Define points for a cube.
 
         // X, Y, Z
@@ -192,6 +217,61 @@ public class GameRenderer implements Renderer {
             1.0f, 0.0f, 1.0f, 1.0f
         };
 
+        // S, T (or X, Y)
+        // Texture coordinate data.
+        // Because images have a Y axis pointing downward (values increase as you move down the image) while
+        // OpenGL has a Y axis pointing upward, we adjust for that here by flipping the Y axis.
+        // What's more is that the texture coordinates are the same for every face.
+        final float[] cubeTextureCoordinateData = {
+            // Front face
+            0.0f, 0.0f,
+            0.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 1.0f,
+            1.0f, 1.0f,
+            1.0f, 0.0f,
+
+            // Right face
+            0.0f, 0.0f,
+            0.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 1.0f,
+            1.0f, 1.0f,
+            1.0f, 0.0f,
+
+            // Back face
+            0.0f, 0.0f,
+            0.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 1.0f,
+            1.0f, 1.0f,
+            1.0f, 0.0f,
+
+            // Left face
+            0.0f, 0.0f,
+            0.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 1.0f,
+            1.0f, 1.0f,
+            1.0f, 0.0f,
+
+            // Top face
+            0.0f, 0.0f,
+            0.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 1.0f,
+            1.0f, 1.0f,
+            1.0f, 0.0f,
+
+            // Bottom face
+            0.0f, 0.0f,
+            0.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 1.0f,
+            1.0f, 1.0f,
+            1.0f, 0.0f
+        };
+
         // Initialize the buffers.
         mCubePositions = ByteBuffer.allocateDirect(cubePositionData.length * mBytesPerFloat)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
@@ -200,6 +280,10 @@ public class GameRenderer implements Renderer {
         mCubeColors = ByteBuffer.allocateDirect(cubeColorData.length * mBytesPerFloat)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
         mCubeColors.put(cubeColorData).position(0);
+
+        mCubeTextureCoordinates = ByteBuffer.allocateDirect(cubeTextureCoordinateData.length * mBytesPerFloat)
+                .order(ByteOrder.nativeOrder()).asFloatBuffer();
+        mCubeTextureCoordinates.put(cubeTextureCoordinateData).position(0);
     }
 
     @Override
@@ -210,27 +294,40 @@ public class GameRenderer implements Renderer {
         GLES20.glEnable(GLES20.GL_CULL_FACE);
         // Fragments with smaller z are displayed in front.
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+        // Enable texture mapping
+        GLES20.glEnable(GLES20.GL_TEXTURE_2D);
 
         // Make rendering program.
+        //final String vertexShader = readTextFileFromRawResource(mActivityContext, R.raw.per_pixel_vertex_shader)
+        //final String fragmentShader = readTextFileFromRawResource(mActivityContext, R.raw.per_pixel_fragment_shader);
         final String vertexShader =
             "uniform mat4 u_MVPMatrix;                    \n" +
             "attribute vec4 a_Position;                   \n" +
             "attribute vec4 a_Color;                      \n" +
+            "attribute vec2 a_TexCoordinate;              \n" +
             "varying vec4 v_Color;                        \n" +
+            "varying vec2 v_TexCoordinate;                \n" +
             "void main() {                                \n" +
             "    v_Color = a_Color;                       \n" +
+            "    v_TexCoordinate = a_TexCoordinate;       \n" +
             "    gl_Position = u_MVPMatrix * a_Position;  \n" +
             "}                                            \n";
         final String fragmentShader =
             "precision mediump float;                     \n" +
+            "uniform sampler2D u_Texture;                 \n" +
             "varying vec4 v_Color;                        \n" +
+            "varying vec2 v_TexCoordinate;                \n" +
             "void main() {                                \n" +
-            "    gl_FragColor = v_Color;                  \n" +
+            "    gl_FragColor = v_Color *                 \n" +
+                 "texture2D(u_Texture, v_TexCoordinate);  \n" +
             "}                                            \n";
         final int vertexShaderHandle = compileShader(GLES20.GL_VERTEX_SHADER, vertexShader);
         final int fragmentShaderHandle = compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader);
-        final String[] attributes = {"a_Position",  "a_Color", "a_Normal"};
-        mPerVertexProgramHandle = makeProgram(vertexShaderHandle, fragmentShaderHandle, attributes);
+        final String[] attributes = {};
+        mProgramHandle = makeProgram(vertexShaderHandle, fragmentShaderHandle, attributes);
+
+        // Load the texture
+        mTextureDataHandle = loadTexture(mActivityContext, R.drawable.chris);
     }
 
     @Override
@@ -252,26 +349,34 @@ public class GameRenderer implements Renderer {
         // Orthogonal view.
         Matrix.orthoM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
         // Perspective view. Not used here.
-        //Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
+        // Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
     }
 
     @Override
-    public void onDrawFrame(GL10 gl)
-    {
+    public void onDrawFrame(GL10 gl) {
+        // Reset colors.
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
-        // Do a complete rotation every 10 seconds.
+        // Do a complete rotation every 10 seconds (10000 miliseconds).
         long time = SystemClock.uptimeMillis() % 10000L;
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
 
         // Set our per-vertex lighting program.
-        GLES20.glUseProgram(mPerVertexProgramHandle);
+        GLES20.glUseProgram(mProgramHandle);
 
         // Set program handles for cube drawing.
-        mMVPMatrixHandle = GLES20.glGetUniformLocation(mPerVertexProgramHandle, "u_MVPMatrix");
-        mMVMatrixHandle = GLES20.glGetUniformLocation(mPerVertexProgramHandle, "u_MVMatrix");
-        mPositionHandle = GLES20.glGetAttribLocation(mPerVertexProgramHandle, "a_Position");
-        mColorHandle = GLES20.glGetAttribLocation(mPerVertexProgramHandle, "a_Color");
+        mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_MVPMatrix");
+        mPositionHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_Position");
+        mColorHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_Color");
+        mTextureUniformHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_Texture");
+        mTextureCoordinateHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_TexCoordinate");
+
+        // Set the active texture unit to texture unit 0.
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        // Bind the texture to this unit.
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureDataHandle);
+        // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
+        GLES20.glUniform1i(mTextureUniformHandle, 0);
 
         // Draw some cubes.
         Matrix.setIdentityM(mModelMatrix, 0);
@@ -300,26 +405,26 @@ public class GameRenderer implements Renderer {
     }
 
     /**
-     * Draw a square/tile.
+     * Draw a tile.
      */
-    private void drawTile()
-    {
+    private void drawTile() {
         // Pass in the position information
         mCubePositions.position(0);
         GLES20.glVertexAttribPointer(mPositionHandle, mPositionDataSize, GLES20.GL_FLOAT, false,
                 0, mCubePositions);
-
         GLES20.glEnableVertexAttribArray(mPositionHandle);
 
         // Pass in the color information
         mCubeColors.position(0);
         GLES20.glVertexAttribPointer(mColorHandle, mColorDataSize, GLES20.GL_FLOAT, false,
                 0, mCubeColors);
-
         GLES20.glEnableVertexAttribArray(mColorHandle);
 
-        // Pass in the modelview matrix.
-        GLES20.glUniformMatrix4fv(mMVMatrixHandle, 1, false, mMVPMatrix, 0);
+        // Pass in the texture coordinate information
+        mCubeTextureCoordinates.position(0);
+        GLES20.glVertexAttribPointer(mTextureCoordinateHandle, mTextureCoordinateDataSize, GLES20.GL_FLOAT, false,
+                0, mCubeTextureCoordinates);
+        GLES20.glEnableVertexAttribArray(mTextureCoordinateHandle);
 
         // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix
         // (which now contains model * view * projection).
@@ -330,6 +435,68 @@ public class GameRenderer implements Renderer {
 
         // Draw the cube.
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 36);
+    }
+
+    public static int loadTexture(final Context context, final int resourceId)
+    {
+        final int[] textureHandle = new int[1];
+
+        GLES20.glGenTextures(1, textureHandle, 0);
+
+        if (textureHandle[0] == 0)
+        {
+            throw new RuntimeException("Error generating texture name.");
+        }
+
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inScaled = false;	// No pre-scaling
+
+        // Read in the resource
+        final Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourceId, options);
+
+        // Bind to the texture in OpenGL
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0]);
+
+        // Set filtering
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST);
+
+        // Load the bitmap into the bound texture.
+        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
+
+        // Recycle the bitmap, since its data has been loaded into OpenGL.
+        bitmap.recycle();
+
+        return textureHandle[0];
+    }
+
+    public static String readTextFileFromRawResource(final Context context,
+                                                     final int resourceId)
+    {
+        final InputStream inputStream = context.getResources().openRawResource(
+                resourceId);
+        final InputStreamReader inputStreamReader = new InputStreamReader(
+                inputStream);
+        final BufferedReader bufferedReader = new BufferedReader(
+                inputStreamReader);
+
+        String nextLine;
+        final StringBuilder body = new StringBuilder();
+
+        try
+        {
+            while ((nextLine = bufferedReader.readLine()) != null)
+            {
+                body.append(nextLine);
+                body.append('\n');
+            }
+        }
+        catch (IOException e)
+        {
+            return null;
+        }
+
+        return body.toString();
     }
 
     /**

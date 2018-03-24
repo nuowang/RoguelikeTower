@@ -49,7 +49,7 @@ public class RoguelikeTower extends Activity implements View.OnTouchListener {
             // Request an OpenGL ES 2.0 compatible context.
             gameView.setEGLContextClientVersion(2);
             // Set the renderer.
-            gameView.setRenderer(new GameRenderer());
+            gameView.setRenderer(new GameRenderer(this));
         }
         else {
             // Currently, ES 1 is not supported.
