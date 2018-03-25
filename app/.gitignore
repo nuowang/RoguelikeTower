@@ -1,6 +1,4 @@
 /build
 /app.iml
-/src/main/res/mipmap*
 /src/main/res/drawable*
-/src/main/res/values*
-/src/main/ic_launcher-web.png
+/src/main/res/mipmap*

@@ -36,8 +36,15 @@ public class RoguelikeTower extends Activity implements View.OnTouchListener {
     /** A reference to the game's graphical interface. */
     private GLSurfaceView gameView;
 
+    public RoguelikeTower() {
+    }
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                View.SYSTEM_UI_FLAG_FULLSCREEN |
+                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
         gameView = new GLSurfaceView(this);
 
         // Check if the system supports OpenGL ES 2.0.
@@ -86,6 +93,7 @@ public class RoguelikeTower extends Activity implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+        System.out.println("Touched");
         return false;
     }
 }
