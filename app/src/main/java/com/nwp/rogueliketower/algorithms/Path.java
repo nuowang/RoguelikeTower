@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.nwp.rogueliketower.mechanics;
+package com.nwp.rogueliketower.algorithms;
 
 public class Path {
 }
