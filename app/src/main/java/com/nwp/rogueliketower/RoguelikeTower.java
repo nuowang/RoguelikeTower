@@ -18,13 +18,9 @@
 
 package com.nwp.rogueliketower;
 
-import com.nwp.rogueliketower.gles.GameRenderer;
+import com.nwp.rogueliketower.scenes.TitleScene;
 
 import android.app.Activity;
-import android.app.ActivityManager;
-import android.content.Context;
-import android.content.pm.ConfigurationInfo;
-import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -33,8 +29,7 @@ import android.view.View;
 
 @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
 public class RoguelikeTower extends Activity implements View.OnTouchListener {
-    /** A reference to the game's graphical interface. */
-    private GLSurfaceView gameView;
+    String currentScene = "";
 
     public RoguelikeTower() {
     }
@@ -42,29 +37,12 @@ public class RoguelikeTower extends Activity implements View.OnTouchListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                View.SYSTEM_UI_FLAG_FULLSCREEN |
-                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                                                         View.SYSTEM_UI_FLAG_FULLSCREEN |
+                                                         View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-        gameView = new GLSurfaceView(this);
 
-        // Check if the system supports OpenGL ES 2.0.
-        final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
-        final boolean supportsEs2 = configurationInfo.reqGlEsVersion >= 0x20000;
+        TitleScene titleScene = new TitleScene(this);
 
-        if (supportsEs2) {
-            // Request an OpenGL ES 2.0 compatible context.
-            gameView.setEGLContextClientVersion(2);
-            // Set the renderer.
-            gameView.setRenderer(new GameRenderer(this));
-        }
-        else {
-            // Currently, ES 1 is not supported.
-            System.out.println("ERROR: Your device does not support OpenGL ES 2.0.");
-            return;
-        }
-
-        setContentView(gameView);
     }
 
     public void onRestart() {
@@ -93,7 +71,6 @@ public class RoguelikeTower extends Activity implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        System.out.println("Touched");
         return false;
     }
 }

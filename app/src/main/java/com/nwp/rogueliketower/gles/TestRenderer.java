@@ -39,8 +39,9 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+import java.util.Random;
 
-public class GameRenderer implements Renderer {
+public class TestRenderer implements Renderer {
     /** Used for debug logs. */
     private static final String TAG = "Renderer";
 
@@ -105,7 +106,7 @@ public class GameRenderer implements Renderer {
     /**
      * Initialize the model data.
      */
-    public GameRenderer(final Context activityContext) {
+    public TestRenderer(final Context activityContext) {
         mActivityContext = activityContext;
 
         // Define points for a cube.
@@ -327,7 +328,11 @@ public class GameRenderer implements Renderer {
         mProgramHandle = makeProgram(vertexShaderHandle, fragmentShaderHandle, attributes);
 
         // Load the texture
-        mTextureDataHandle = loadTexture(mActivityContext, R.drawable.chris);
+        Random rand = new Random();
+        if(rand.nextInt() % 2 == 0)
+            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.chris);
+        else
+            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.chris2);
     }
 
     @Override
