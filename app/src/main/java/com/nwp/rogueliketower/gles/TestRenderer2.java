@@ -37,11 +37,12 @@ import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
 import java.util.Random;
 
-public class TestRenderer implements Renderer {
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
+
+public class TestRenderer2 implements Renderer {
     /** Used for debug logs. */
     private static final String TAG = "Renderer";
 
@@ -106,7 +107,7 @@ public class TestRenderer implements Renderer {
     /**
      * Initialize the model data.
      */
-    public TestRenderer(final Context activityContext) {
+    public TestRenderer2(final Context activityContext) {
         mActivityContext = activityContext;
 
         // Define points for a cube.
@@ -330,15 +331,15 @@ public class TestRenderer implements Renderer {
         // Load the texture
         Random rand = new Random();
         if(rand.nextInt() % 2 == 0)
-            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.chris);
+            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.chris2);
         else
-            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.chris);
+            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.chris2);
     }
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         // Set the OpenGL viewport to the same size as the screen.
-        GLES20.glViewport(0, 0, width/2, height/2);
+        GLES20.glViewport(width/2, height/2, width, height);
 
         // Scale the shapes to keep their original aspect ratio given the aspect ratio of the device screen.
         // The height of the shapes will stay the same while the width varies.

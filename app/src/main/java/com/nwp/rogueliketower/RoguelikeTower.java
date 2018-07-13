@@ -1,6 +1,6 @@
 /*
  * Roguelike Tower
- * Copyright (C) 2017 NWP
+ * Copyright (C) 2018 NWP
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
 
 package com.nwp.rogueliketower;
 
-import com.nwp.rogueliketower.scenes.TitleScene;
-
 import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,21 +25,26 @@ import android.support.annotation.RequiresApi;
 import android.view.MotionEvent;
 import android.view.View;
 
-@RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
+import com.nwp.rogueliketower.scenes.TitleScene;
+import com.nwp.rogueliketower.scenes.TitleScene2;
+
+@RequiresApi(api = Build.VERSION_CODES.KITKAT)
 public class RoguelikeTower extends Activity implements View.OnTouchListener {
-    String currentScene = "";
-
-    public RoguelikeTower() {
-    }
-
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                                                         View.SYSTEM_UI_FLAG_FULLSCREEN |
-                                                         View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
+        // Configure the screen.
+        getWindow().getDecorView().setSystemUiVisibility(
+            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+            View.SYSTEM_UI_FLAG_FULLSCREEN |
+            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+        );
 
         TitleScene titleScene = new TitleScene(this);
+        setContentView(titleScene.getGameView());
+
+        //TitleScene2 titleScene2 = new TitleScene2(this);
+        //setContentView(titleScene2.getGameView());
 
     }
 

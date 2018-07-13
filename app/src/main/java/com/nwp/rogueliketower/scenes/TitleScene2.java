@@ -18,21 +18,20 @@
 
 package com.nwp.rogueliketower.scenes;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
-import android.app.Activity;
+import android.opengl.GLSurfaceView;
 
 import com.nwp.rogueliketower.core.GameView;
-import com.nwp.rogueliketower.gles.TestRenderer;
+import com.nwp.rogueliketower.gles.TestRenderer2;
 
-public class TitleScene {
-    /**
-     * A reference to the game's graphical interface.
-     */
+public class TitleScene2 {
+    /** A reference to the game's graphical interface. */
     private GameView gameView;
 
-    public TitleScene(Activity activity) {
+    public TitleScene2(Activity activity) {
         gameView = new GameView(activity);
 
         // Check if the system supports OpenGL ES 2.0.
@@ -44,8 +43,9 @@ public class TitleScene {
             // Request an OpenGL ES 2.0 compatible context.
             gameView.setEGLContextClientVersion(2);
             // Set the renderer.
-            gameView.setRenderer(new TestRenderer(activity));
-        } else {
+            gameView.setRenderer(new TestRenderer2(activity));
+        }
+        else {
             // Currently, ES 1 is not supported.
             System.out.println("ERROR: Your device does not support OpenGL ES 2.0.");
             return;
@@ -56,7 +56,5 @@ public class TitleScene {
     public GameView getGameView() {
         return this.gameView;
     }
-
-
 
 }

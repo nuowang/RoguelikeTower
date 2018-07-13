@@ -16,7 +16,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.nwp.rogueliketower.algorithms;
+package com.nwp.rogueliketower.core;
 
-public class Cache {
+import android.app.Activity;
+import android.content.Context;
+import android.opengl.GLSurfaceView;
+import android.view.MotionEvent;
+
+import com.nwp.rogueliketower.scenes.TitleScene2;
+
+public class GameView extends GLSurfaceView {
+    Activity currentContext;
+    public GameView(Activity context) {
+        super(context);
+
+        currentContext = context;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        TitleScene2 titleScene2 = new TitleScene2(currentContext);
+        currentContext.setContentView(titleScene2.getGameView());
+        return true;
+    }
 }
