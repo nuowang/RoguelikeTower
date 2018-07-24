@@ -19,11 +19,14 @@
 package com.nwp.rogueliketower.core;
 
 import android.app.Activity;
-import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
 
+import com.nwp.rogueliketower.R;
+import com.nwp.rogueliketower.scenes.TitleScene;
 import com.nwp.rogueliketower.scenes.TitleScene2;
+
+import java.util.Random;
 
 public class GameView extends GLSurfaceView {
     Activity currentContext;
@@ -35,8 +38,15 @@ public class GameView extends GLSurfaceView {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        TitleScene2 titleScene2 = new TitleScene2(currentContext);
-        currentContext.setContentView(titleScene2.getGameView());
+        if(event.getAction() == MotionEvent.ACTION_DOWN) {
+            TitleScene titleScene = new TitleScene(currentContext);
+            currentContext.setContentView(titleScene.getGameView());
+        }
+        else if (event.getAction() == MotionEvent.ACTION_UP) {
+            TitleScene2 titleScene2 = new TitleScene2(currentContext);
+            currentContext.setContentView(titleScene2.getGameView());
+        }
+
         return true;
     }
 }
