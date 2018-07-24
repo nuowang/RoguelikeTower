@@ -19,33 +19,28 @@
 package com.nwp.rogueliketower.core;
 
 import android.app.Activity;
-import android.opengl.GLSurfaceView;
-import android.view.MotionEvent;
 
-public class GameView extends GLSurfaceView {
+import com.nwp.rogueliketower.gles.GameRenderer;
+import com.nwp.rogueliketower.gles.RendererData;
+
+public class Game {
     private Activity activity;
-    private MotionEvent currentEvent;
+    private GameView gameView;
+    private GameData gameData;
+    private RendererData rendererData;
+    private GameRenderer gameRenderer;
 
-    public GameView(Activity activity) {
-        super(activity);
 
+    public Game(Activity activity) {
         this.activity = activity;
-    }
+        this.gameView = new GameView(activity);
+        this.gameData = new GameData();
+        this.rendererData = new RendererData();
+        this.gameRenderer = new GameRenderer(this.activity, this.rendererData);
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        currentEvent = event;
-        if(event.getAction() == MotionEvent.ACTION_DOWN) {
-
-        }
-        else if (event.getAction() == MotionEvent.ACTION_UP) {
-
-        }
-
-        return true;
-    }
-
-    public MotionEvent getEvent() {
-        return currentEvent;
+        // The system must support GLES 2.0 to run this code.
+        this.gameView.setEGLContextClientVersion(2);
+        this.gameView.setRenderer(this.gameRenderer);
+        this.activity.setContentView(this.gameView);
     }
 }

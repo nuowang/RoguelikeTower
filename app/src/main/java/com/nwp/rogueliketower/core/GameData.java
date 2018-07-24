@@ -18,5 +18,5 @@
 
 package com.nwp.rogueliketower.core;
 
-public class Container extends Gizmo {
+public class GameData {
 }

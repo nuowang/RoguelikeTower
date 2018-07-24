@@ -18,5 +18,5 @@
 
 package com.nwp.rogueliketower.core;
 
-public class Group extends Gizmo {
+public class Group {
 }

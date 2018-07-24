@@ -22,14 +22,14 @@ import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
-import android.view.MotionEvent;
 import android.view.View;
 
-import com.nwp.rogueliketower.scenes.TitleScene;
-import com.nwp.rogueliketower.scenes.TitleScene2;
+import com.nwp.rogueliketower.core.Game;
 
 @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-public class RoguelikeTower extends Activity implements View.OnTouchListener {
+public class RoguelikeTower extends Activity {
+    private Game game;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -40,12 +40,8 @@ public class RoguelikeTower extends Activity implements View.OnTouchListener {
             View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
         );
 
-        TitleScene titleScene = new TitleScene(this);
-        setContentView(titleScene.getGameView());
-
-        //TitleScene2 titleScene2 = new TitleScene2(this);
-        //setContentView(titleScene2.getGameView());
-
+        // Game starts on creation.
+        this.game = new Game(this);
     }
 
     public void onRestart() {
@@ -72,8 +68,4 @@ public class RoguelikeTower extends Activity implements View.OnTouchListener {
         super.onDestroy();
     }
 
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        return false;
-    }
 }
