@@ -18,11 +18,15 @@
 
 package com.nwp.rogueliketower.gles;
 
+import android.view.MotionEvent;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 public class RendererData {
+    public MotionEvent currentEvent;
+
     // How many bytes per float.
     public final int bytesPerFloat = 4;
     // Size of the position data in elements.
@@ -115,7 +119,9 @@ public class RendererData {
     public RendererData() {
         // Define points for a cube.
         // X, Y, Z
-
+        for (int i = 0; i< cubePositionData.length; i++) {
+            cubePositionData[i] *= 0.1;
+        }
 
         // R, G, B, A
         final float[] cubeColorData = {
@@ -238,14 +244,40 @@ public class RendererData {
     }
 
     public void update() {
-        if (-cubePositionData[0] > 0.01 && counter % 2 == 0) {
-            for (int i = 0; i< cubePositionData.length; i++) {
-                cubePositionData[i] *= 0.99;
+        float x = 1/10;
+        float y = 1/10;
+        if (currentEvent != null) {
+            x = (currentEvent.getRawX() - 540) / 1080;
+            y = (-currentEvent.getRawY() + 960) / 1920;
+            //System.out.println(x);
+            //System.out.println(y);
+        }
+
+        float centerx = 0;
+        float centery = 0;
+        for (int i = 0; i< cubePositionData.length / 3; i++) {
+            centerx += cubePositionData[3*i+0];
+            centery += cubePositionData[3*i+1];
+        }
+        centerx = centerx / (cubePositionData.length / 3);
+        centery = centery / (cubePositionData.length / 3);
+
+        if (cubePositionData[2] > 0.05 && counter % 2 == 0) {
+            for (int i = 0; i< cubePositionData.length / 3; i++) {
+                cubePositionData[3*i+0] *= 0.99;
+                cubePositionData[3*i+1] *= 0.99;
+                cubePositionData[3*i+0] += (x - centerx)/10;
+                cubePositionData[3*i+1] += (y - centery)/10;
+                cubePositionData[3*i+2] *= 0.99;
             }
         }
-        else if (-cubePositionData[0] < 2 && counter % 2 == 1) {
-            for (int i = 0; i< cubePositionData.length; i++) {
-                cubePositionData[i] *= 1.01;
+        else if (cubePositionData[2] < 0.1 && counter % 2 == 1) {
+            for (int i = 0; i< cubePositionData.length / 3; i++) {
+                cubePositionData[3*i+0] *= 1.01;
+                cubePositionData[3*i+1] *= 1.01;
+                cubePositionData[3*i+0] += (x - centerx)/10;
+                cubePositionData[3*i+1] += (y - centery)/10;
+                cubePositionData[3*i+2] *= 1.01;
             }
         }
         mCubePositions.put(cubePositionData).position(0);
