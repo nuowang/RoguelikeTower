@@ -22,26 +22,31 @@ import android.app.Activity;
 import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
 
+import com.nwp.rogueliketower.gles.RendererData;
+
 public class GameView extends GLSurfaceView {
     private Activity activity;
     private MotionEvent currentEvent;
+    private GameData gameData;
+    private RendererData rendererData;
 
-    public GameView(Activity activity) {
+    public GameView(Activity activity, GameData gameData, RendererData rendererData) {
         super(activity);
 
         this.activity = activity;
+        this.gameData = gameData;
+        this.rendererData = rendererData;
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         currentEvent = event;
         if(event.getAction() == MotionEvent.ACTION_DOWN) {
-
+            rendererData.counter++;
         }
         else if (event.getAction() == MotionEvent.ACTION_UP) {
 
         }
-
         return true;
     }
 

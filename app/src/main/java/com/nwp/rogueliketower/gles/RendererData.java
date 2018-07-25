@@ -32,6 +32,7 @@ public class RendererData {
     // Size of the texture coordinate data in elements.
     public final int textureCoordinateDataSize = 2;
 
+    public int counter = 0;
     public float[] cubePositionData = {
             // In OpenGL counter-clockwise winding is default. This means that when we look at a triangle,
             // if the points are counter-clockwise we are looking at the "front". If not we are looking at
@@ -237,9 +238,15 @@ public class RendererData {
     }
 
     public void update() {
-        // mCubePositions
-        for (int i = 0; i< cubePositionData.length; i++) {
-            cubePositionData[i] *= 0.99;
+        if (-cubePositionData[0] > 0.01 && counter % 2 == 0) {
+            for (int i = 0; i< cubePositionData.length; i++) {
+                cubePositionData[i] *= 0.99;
+            }
+        }
+        else if (-cubePositionData[0] < 2 && counter % 2 == 1) {
+            for (int i = 0; i< cubePositionData.length; i++) {
+                cubePositionData[i] *= 1.01;
+            }
         }
         mCubePositions.put(cubePositionData).position(0);
     }

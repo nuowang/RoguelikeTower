@@ -33,9 +33,9 @@ public class Game {
 
     public Game(Activity activity) {
         this.activity = activity;
-        this.gameView = new GameView(activity);
         this.gameData = new GameData();
         this.rendererData = new RendererData();
+        this.gameView = new GameView(activity, gameData, rendererData);
         this.gameRenderer = new GameRenderer(this.activity, this.rendererData);
 
         // The system must support GLES 2.0 to run this code.
