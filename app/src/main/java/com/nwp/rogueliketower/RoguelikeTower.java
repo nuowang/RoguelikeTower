@@ -40,7 +40,7 @@ public class RoguelikeTower extends Activity {
             View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
         );
 
-        // Game starts on creation.
+        // Game starts automatically on creation.
         this.game = new Game(this);
     }
 

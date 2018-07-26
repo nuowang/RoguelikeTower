@@ -25,6 +25,12 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 public class RendererData {
+    // The current number of displayed tiles.
+    public int nTiles;
+    // The total number of tiles that the float array can currently hold.
+    // TODO: Make the float array dynamically adjustable.
+    public int maxTiles;
+    // The motion event observed.
     public MotionEvent currentEvent;
 
     // How many bytes per float.
@@ -36,191 +42,112 @@ public class RendererData {
     // Size of the texture coordinate data in elements.
     public final int textureCoordinateDataSize = 2;
 
-    public int counter = 0;
-    public float[] cubePositionData = {
-            // In OpenGL counter-clockwise winding is default. This means that when we look at a triangle,
-            // if the points are counter-clockwise we are looking at the "front". If not we are looking at
-            // the back. OpenGL has an optimization where all back-facing triangles are culled, since they
-            // usually represent the backside of an object and aren't visible anyways.
-
-            // Front face
-            -1.0f, 1.0f, 1.0f,
-            -1.0f, -1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f,
-            -1.0f, -1.0f, 1.0f,
-            1.0f, -1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f,
-
-            // Right face
-            1.0f, 1.0f, 1.0f,
-            1.0f, -1.0f, 1.0f,
-            1.0f, 1.0f, -1.0f,
-            1.0f, -1.0f, 1.0f,
-            1.0f, -1.0f, -1.0f,
-            1.0f, 1.0f, -1.0f,
-
-            // Back face
-            1.0f, 1.0f, -1.0f,
-            1.0f, -1.0f, -1.0f,
-            -1.0f, 1.0f, -1.0f,
-            1.0f, -1.0f, -1.0f,
-            -1.0f, -1.0f, -1.0f,
-            -1.0f, 1.0f, -1.0f,
-
-            // Left face
-            -1.0f, 1.0f, -1.0f,
-            -1.0f, -1.0f, -1.0f,
-            -1.0f, 1.0f, 1.0f,
-            -1.0f, -1.0f, -1.0f,
-            -1.0f, -1.0f, 1.0f,
-            -1.0f, 1.0f, 1.0f,
-
-            // Top face
-            -1.0f, 1.0f, -1.0f,
-            -1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, -1.0f,
-            -1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, -1.0f,
-
-            // Bottom face
-            1.0f, -1.0f, -1.0f,
-            1.0f, -1.0f, 1.0f,
-            -1.0f, -1.0f, -1.0f,
-            1.0f, -1.0f, 1.0f,
-            -1.0f, -1.0f, 1.0f,
-            -1.0f, -1.0f, -1.0f,
-    };
-
-    /**
-     * Store the model matrix. This matrix is used to move models from object space (where each model can be thought
-     * of being located at the center of the universe) to world space.
-     */
-    public float[] mModelMatrix = new float[16];
-
-    /**
-     * Store the view matrix. This can be thought of as our camera. This matrix transforms world space to eye space;
-     * it positions things relative to our eye.
-     */
-    public float[] mViewMatrix = new float[16];
-
-    /** Store the projection matrix. This is used to project the scene onto a 2D viewport. */
-    public float[] mProjectionMatrix = new float[16];
-
-    /** Allocate storage for the final combined matrix. This will be passed into the shader program. */
-    public float[] mMVPMatrix = new float[16];
-
-
-    /** Store our model data in a float buffer. */
-    public FloatBuffer mCubePositions;
-    public final FloatBuffer mCubeColors;
-    public final FloatBuffer mCubeTextureCoordinates;
+    // Data holders.
+    public float[] positionData;
+    public float[] colorData;
+    public float[] textureCoordinateData;
+    // The buffers to pass the data to.
+    public final FloatBuffer positions;
+    public final FloatBuffer colors;
+    public final FloatBuffer textureCoordinates;
 
     public RendererData() {
-        // Define points for a cube.
-        // X, Y, Z
-        for (int i = 0; i< cubePositionData.length; i++) {
-            cubePositionData[i] *= 0.1;
-        }
+        // Renderer data starts with zero tiles.
+        this.nTiles = 4;
+        // I chose to set the initial max number of tiles to 1000.
+        this.maxTiles = 1000;
 
-        // R, G, B, A
-        final float[] cubeColorData = {
-                // Front face (red)
-                1.0f, 0.0f, 0.0f, 1.0f,
-                1.0f, 0.0f, 0.0f, 1.0f,
-                1.0f, 0.0f, 0.0f, 1.0f,
-                1.0f, 0.0f, 0.0f, 1.0f,
-                1.0f, 0.0f, 0.0f, 1.0f,
-                1.0f, 0.0f, 0.0f, 1.0f,
-
-                // Right face (green)
-                0.0f, 1.0f, 0.0f, 1.0f,
-                0.0f, 1.0f, 0.0f, 1.0f,
-                0.0f, 1.0f, 0.0f, 1.0f,
-                0.0f, 1.0f, 0.0f, 1.0f,
-                0.0f, 1.0f, 0.0f, 1.0f,
-                0.0f, 1.0f, 0.0f, 1.0f,
-
-                // Back face (blue)
-                0.0f, 0.0f, 1.0f, 1.0f,
-                0.0f, 0.0f, 1.0f, 1.0f,
-                0.0f, 0.0f, 1.0f, 1.0f,
-                0.0f, 0.0f, 1.0f, 1.0f,
-                0.0f, 0.0f, 1.0f, 1.0f,
-                0.0f, 0.0f, 1.0f, 1.0f,
-
-                // Left face (yellow)
-                1.0f, 1.0f, 0.0f, 1.0f,
-                1.0f, 1.0f, 0.0f, 1.0f,
-                1.0f, 1.0f, 0.0f, 1.0f,
-                1.0f, 1.0f, 0.0f, 1.0f,
-                1.0f, 1.0f, 0.0f, 1.0f,
-                1.0f, 1.0f, 0.0f, 1.0f,
-
-                // Top face (cyan)
-                0.0f, 1.0f, 1.0f, 1.0f,
-                0.0f, 1.0f, 1.0f, 1.0f,
-                0.0f, 1.0f, 1.0f, 1.0f,
-                0.0f, 1.0f, 1.0f, 1.0f,
-                0.0f, 1.0f, 1.0f, 1.0f,
-                0.0f, 1.0f, 1.0f, 1.0f,
-
-                // Bottom face (magenta)
-                1.0f, 0.0f, 1.0f, 1.0f,
-                1.0f, 0.0f, 1.0f, 1.0f,
-                1.0f, 0.0f, 1.0f, 1.0f,
-                1.0f, 0.0f, 1.0f, 1.0f,
-                1.0f, 0.0f, 1.0f, 1.0f,
-                1.0f, 0.0f, 1.0f, 1.0f
+        this.positionData = new float[]{
+                // Tile 1.
+//                0.0f, 50.f, 0.0f,
+//                0.0f, 0.0f, 0.0f,
+//                50.f, 50.f, 0.0f,
+//                0.0f, 0.0f, 0.0f,
+//                50.f, 0.0f, 0.0f,
+//                50.f, 50.f, 0.0f,
+                -0.1f,  0.1f, 0.0f,
+                -0.1f, -0.1f, 0.0f,
+                 0.1f,  0.1f, 0.0f,
+                -0.1f, -0.1f, 0.0f,
+                 0.1f, -0.1f, 0.0f,
+                 0.1f,  0.1f, 0.0f,
+                // Tile 2.
+                -0.1f,  0.3f, 0.0f,
+                -0.1f,  0.1f, 0.0f,
+                 0.1f,  0.3f, 0.0f,
+                -0.1f,  0.1f, 0.0f,
+                 0.1f,  0.1f, 0.0f,
+                 0.1f,  0.3f, 0.0f,
+                // Tile 3.
+                 0.1f,  0.1f, 0.0f,
+                 0.1f, -0.1f, 0.0f,
+                 0.3f,  0.1f, 0.0f,
+                 0.1f, -0.1f, 0.0f,
+                 0.3f, -0.1f, 0.0f,
+                 0.3f,  0.1f, 0.0f,
+                // Tile 4.
+                 0.1f,  0.3f, 0.0f,
+                 0.1f,  0.1f, 0.0f,
+                 0.3f,  0.3f, 0.0f,
+                 0.1f,  0.1f, 0.0f,
+                 0.3f,  0.1f, 0.0f,
+                 0.3f,  0.3f, 0.0f
         };
 
-        // S, T (or X, Y)
-        // Texture coordinate data.
-        // Because images have a Y axis pointing downward (values increase as you move down the image) while
-        // OpenGL has a Y axis pointing upward, we adjust for that here by flipping the Y axis.
-        // What's more is that the texture coordinates are the same for every face.
-        final float[] cubeTextureCoordinateData = {
-                // Front face
+        this.colorData = new float[]{
+                // Tile 1 (red).
+                1.0f, 0.0f, 0.0f, 1.0f,
+                1.0f, 0.0f, 0.0f, 1.0f,
+                1.0f, 0.0f, 0.0f, 1.0f,
+                1.0f, 0.0f, 0.0f, 1.0f,
+                1.0f, 0.0f, 0.0f, 1.0f,
+                1.0f, 0.0f, 0.0f, 1.0f,
+                // Tile 2 (green).
+                0.0f, 1.0f, 0.0f, 1.0f,
+                0.0f, 1.0f, 0.0f, 1.0f,
+                0.0f, 1.0f, 0.0f, 1.0f,
+                0.0f, 1.0f, 0.0f, 1.0f,
+                0.0f, 1.0f, 0.0f, 1.0f,
+                0.0f, 1.0f, 0.0f, 1.0f,
+                // Tile 3 (blue).
+                0.0f, 0.0f, 1.0f, 1.0f,
+                0.0f, 0.0f, 1.0f, 1.0f,
+                0.0f, 0.0f, 1.0f, 1.0f,
+                0.0f, 0.0f, 1.0f, 1.0f,
+                0.0f, 0.0f, 1.0f, 1.0f,
+                0.0f, 0.0f, 1.0f, 1.0f,
+                // Tile 4 (yellow).
+                1.0f, 1.0f, 0.0f, 1.0f,
+                1.0f, 1.0f, 0.0f, 1.0f,
+                1.0f, 1.0f, 0.0f, 1.0f,
+                1.0f, 1.0f, 0.0f, 1.0f,
+                1.0f, 1.0f, 0.0f, 1.0f,
+                1.0f, 1.0f, 0.0f, 1.0f
+        };
+
+        this.textureCoordinateData = new float[]{
+                // Tile 1.
                 0.0f, 0.0f,
                 0.0f, 1.0f,
                 1.0f, 0.0f,
                 0.0f, 1.0f,
                 1.0f, 1.0f,
                 1.0f, 0.0f,
-
-                // Right face
+                // Tile 2.
                 0.0f, 0.0f,
                 0.0f, 1.0f,
                 1.0f, 0.0f,
                 0.0f, 1.0f,
                 1.0f, 1.0f,
                 1.0f, 0.0f,
-
-                // Back face
+                // Tile 3.
                 0.0f, 0.0f,
                 0.0f, 1.0f,
                 1.0f, 0.0f,
                 0.0f, 1.0f,
                 1.0f, 1.0f,
                 1.0f, 0.0f,
-
-                // Left face
-                0.0f, 0.0f,
-                0.0f, 1.0f,
-                1.0f, 0.0f,
-                0.0f, 1.0f,
-                1.0f, 1.0f,
-                1.0f, 0.0f,
-
-                // Top face
-                0.0f, 0.0f,
-                0.0f, 1.0f,
-                1.0f, 0.0f,
-                0.0f, 1.0f,
-                1.0f, 1.0f,
-                1.0f, 0.0f,
-
-                // Bottom face
+                // Tile 4.
                 0.0f, 0.0f,
                 0.0f, 1.0f,
                 1.0f, 0.0f,
@@ -230,56 +157,40 @@ public class RendererData {
         };
 
         // Initialize the buffers.
-        mCubePositions = ByteBuffer.allocateDirect(cubePositionData.length * bytesPerFloat)
+        positions = ByteBuffer.allocateDirect(positionData.length * bytesPerFloat)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
-        mCubePositions.put(cubePositionData).position(0);
+        positions.put(positionData).position(0);
 
-        mCubeColors = ByteBuffer.allocateDirect(cubeColorData.length * bytesPerFloat)
+        colors = ByteBuffer.allocateDirect(colorData.length * bytesPerFloat)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
-        mCubeColors.put(cubeColorData).position(0);
+        colors.put(colorData).position(0);
 
-        mCubeTextureCoordinates = ByteBuffer.allocateDirect(cubeTextureCoordinateData.length * bytesPerFloat)
+        textureCoordinates = ByteBuffer.allocateDirect(textureCoordinateData.length * bytesPerFloat)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
-        mCubeTextureCoordinates.put(cubeTextureCoordinateData).position(0);
+        textureCoordinates.put(textureCoordinateData).position(0);
     }
 
-    public void update() {
+    public int update() {
         float x = 1/10;
         float y = 1/10;
         if (currentEvent != null) {
             x = (currentEvent.getRawX() - 540) / 1080;
-            y = (-currentEvent.getRawY() + 960) / 1920;
-            //System.out.println(x);
-            //System.out.println(y);
+            y = (-currentEvent.getRawY() + 960) / 1920  * 2220 / 1080;
         }
-
         float centerx = 0;
         float centery = 0;
-        for (int i = 0; i< cubePositionData.length / 3; i++) {
-            centerx += cubePositionData[3*i+0];
-            centery += cubePositionData[3*i+1];
+        for (int i = 0; i< positionData.length / 3; i++) {
+            centerx += positionData[3*i+0];
+            centery += positionData[3*i+1];
         }
-        centerx = centerx / (cubePositionData.length / 3);
-        centery = centery / (cubePositionData.length / 3);
+        centerx = centerx / (positionData.length / 3);
+        centery = centery / (positionData.length / 3);
+        for (int i = 0; i< positionData.length / 3; i++) {
+            positionData[3*i+0] += (x - centerx)/10;
+            positionData[3*i+1] += (y - centery)/10;
+        }
 
-        if (cubePositionData[2] > 0.05 && counter % 2 == 0) {
-            for (int i = 0; i< cubePositionData.length / 3; i++) {
-                cubePositionData[3*i+0] *= 0.99;
-                cubePositionData[3*i+1] *= 0.99;
-                cubePositionData[3*i+0] += (x - centerx)/10;
-                cubePositionData[3*i+1] += (y - centery)/10;
-                cubePositionData[3*i+2] *= 0.99;
-            }
-        }
-        else if (cubePositionData[2] < 0.1 && counter % 2 == 1) {
-            for (int i = 0; i< cubePositionData.length / 3; i++) {
-                cubePositionData[3*i+0] *= 1.01;
-                cubePositionData[3*i+1] *= 1.01;
-                cubePositionData[3*i+0] += (x - centerx)/10;
-                cubePositionData[3*i+1] += (y - centery)/10;
-                cubePositionData[3*i+2] *= 1.01;
-            }
-        }
-        mCubePositions.put(cubePositionData).position(0);
+        positions.put(positionData).position(0);
+        return nTiles;
     }
 }

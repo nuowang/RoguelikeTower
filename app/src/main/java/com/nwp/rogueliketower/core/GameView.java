@@ -41,14 +41,7 @@ public class GameView extends GLSurfaceView {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         currentEvent = event;
-        rendererData.currentEvent = event;
-
-        if(event.getAction() == MotionEvent.ACTION_DOWN) {
-            rendererData.counter++;
-        }
-        else if (event.getAction() == MotionEvent.ACTION_UP) {
-
-        }
+        rendererData.currentEvent = currentEvent;
         return true;
     }
 

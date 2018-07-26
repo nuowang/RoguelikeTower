@@ -30,17 +30,24 @@ public class Game {
     private RendererData rendererData;
     private GameRenderer gameRenderer;
 
-
     public Game(Activity activity) {
         this.activity = activity;
         this.gameData = new GameData();
         this.rendererData = new RendererData();
         this.gameView = new GameView(activity, gameData, rendererData);
-        this.gameRenderer = new GameRenderer(this.activity, this.rendererData);
+        this.gameRenderer = new GameRenderer(this.activity, this);
 
-        // The system must support GLES 2.0 to run this code.
+        // The system running this code must support GLES 2.0.
         this.gameView.setEGLContextClientVersion(2);
         this.gameView.setRenderer(this.gameRenderer);
         this.activity.setContentView(this.gameView);
+    }
+
+    public int step() {
+        return rendererData.update();
+    }
+
+    public RendererData getRendererData() {
+        return rendererData;
     }
 }
