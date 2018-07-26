@@ -65,33 +65,33 @@ public class RendererData {
 //                0.0f, 0.0f, 0.0f,
 //                50.f, 0.0f, 0.0f,
 //                50.f, 50.f, 0.0f,
-                -0.1f,  0.1f, 0.0f,
-                -0.1f, -0.1f, 0.0f,
-                 0.1f,  0.1f, 0.0f,
-                -0.1f, -0.1f, 0.0f,
-                 0.1f, -0.1f, 0.0f,
-                 0.1f,  0.1f, 0.0f,
+                -0.1f,  0.1f*1080 / 1920, 0.0f,
+                -0.1f, -0.1f*1080 / 1920, 0.0f,
+                 0.1f,  0.1f*1080 / 1920, 0.0f,
+                -0.1f, -0.1f*1080 / 1920, 0.0f,
+                 0.1f, -0.1f*1080 / 1920, 0.0f,
+                 0.1f,  0.1f*1080 / 1920, 0.0f,
                 // Tile 2.
-                -0.1f,  0.3f, 0.0f,
-                -0.1f,  0.1f, 0.0f,
-                 0.1f,  0.3f, 0.0f,
-                -0.1f,  0.1f, 0.0f,
-                 0.1f,  0.1f, 0.0f,
-                 0.1f,  0.3f, 0.0f,
+                -0.1f,  0.3f*1080 / 1920, 0.0f,
+                -0.1f,  0.1f*1080 / 1920, 0.0f,
+                 0.1f,  0.3f*1080 / 1920, 0.0f,
+                -0.1f,  0.1f*1080 / 1920, 0.0f,
+                 0.1f,  0.1f*1080 / 1920, 0.0f,
+                 0.1f,  0.3f*1080 / 1920, 0.0f,
                 // Tile 3.
-                 0.1f,  0.1f, 0.0f,
-                 0.1f, -0.1f, 0.0f,
-                 0.3f,  0.1f, 0.0f,
-                 0.1f, -0.1f, 0.0f,
-                 0.3f, -0.1f, 0.0f,
-                 0.3f,  0.1f, 0.0f,
+                 0.1f,  0.1f*1080 / 1920, 0.0f,
+                 0.1f, -0.1f*1080 / 1920, 0.0f,
+                 0.3f,  0.1f*1080 / 1920, 0.0f,
+                 0.1f, -0.1f*1080 / 1920, 0.0f,
+                 0.3f, -0.1f*1080 / 1920, 0.0f,
+                 0.3f,  0.1f*1080 / 1920, 0.0f,
                 // Tile 4.
-                 0.1f,  0.3f, 0.0f,
-                 0.1f,  0.1f, 0.0f,
-                 0.3f,  0.3f, 0.0f,
-                 0.1f,  0.1f, 0.0f,
-                 0.3f,  0.1f, 0.0f,
-                 0.3f,  0.3f, 0.0f
+                 0.1f,  0.3f*1080 / 1920, 0.0f,
+                 0.1f,  0.1f*1080 / 1920, 0.0f,
+                 0.3f,  0.3f*1080 / 1920, 0.0f,
+                 0.1f,  0.1f*1080 / 1920, 0.0f,
+                 0.3f,  0.1f*1080 / 1920, 0.0f,
+                 0.3f,  0.3f*1080 / 1920, 0.0f
         };
 
         this.colorData = new float[]{
@@ -174,8 +174,8 @@ public class RendererData {
         float x = 1/10;
         float y = 1/10;
         if (currentEvent != null) {
-            x = (currentEvent.getRawX() - 540) / 1080;
-            y = (-currentEvent.getRawY() + 960) / 1920  * 2220 / 1080;
+            x = (currentEvent.getRawX() + 1 - 540) / 540;
+            y = (-currentEvent.getRawY() - 1 + 960) / 960;
         }
         float centerx = 0;
         float centery = 0;
@@ -189,6 +189,9 @@ public class RendererData {
             positionData[3*i+0] += (x - centerx)/10;
             positionData[3*i+1] += (y - centery)/10;
         }
+
+        System.out.println(centerx);
+        System.out.println(centery);
 
         positions.put(positionData).position(0);
         return nTiles;

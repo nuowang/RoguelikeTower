@@ -125,6 +125,7 @@ public class GameRenderer implements Renderer {
 
         // Use orthogonal view and scale the image to the right aspect ratio.
         Matrix.orthoM(projectionMatrix, 0, left, right, bottom, top, near, far);
+        Matrix.setIdentityM(projectionMatrix, 0);
     }
 
     @Override
