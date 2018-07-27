@@ -22,30 +22,30 @@ import android.app.Activity;
 import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
 
-import com.nwp.rogueliketower.gles.RendererData;
+import com.nwp.rogueliketower.gles.GameRenderer;
 
 public class GameView extends GLSurfaceView {
-    private Activity activity;
-    private MotionEvent currentEvent;
-    private GameData gameData;
-    private RendererData rendererData;
+    public Activity activity;
+    public Game game;
+    public GameRenderer gameRenderer;
 
-    public GameView(Activity activity, GameData gameData, RendererData rendererData) {
+    public GameView(Activity activity, Game game) {
         super(activity);
 
         this.activity = activity;
-        this.gameData = gameData;
-        this.rendererData = rendererData;
+        this.game = game;
+        this.gameRenderer = new GameRenderer(this.activity, this.game);
+
+        // The system running this code must support GLES 2.0.
+        // TODO: Add GLES version checks.
+        this.setEGLContextClientVersion(2);
+        this.setRenderer(this.gameRenderer);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        currentEvent = event;
-        rendererData.currentEvent = currentEvent;
+        game.data.currentEvent = event;
         return true;
     }
 
-    public MotionEvent getEvent() {
-        return currentEvent;
-    }
 }

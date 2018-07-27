@@ -18,36 +18,15 @@
 
 package com.nwp.rogueliketower.core;
 
-import android.app.Activity;
-
-import com.nwp.rogueliketower.gles.GameRenderer;
-import com.nwp.rogueliketower.gles.RendererData;
-
 public class Game {
-    private Activity activity;
-    private GameView gameView;
-    private GameData gameData;
-    private RendererData rendererData;
-    private GameRenderer gameRenderer;
+    public GameData data;
 
-    public Game(Activity activity) {
-        this.activity = activity;
-        this.gameData = new GameData();
-        this.rendererData = new RendererData();
-        this.gameView = new GameView(activity, gameData, rendererData);
-        this.gameRenderer = new GameRenderer(this.activity, this);
-
-        // The system running this code must support GLES 2.0.
-        this.gameView.setEGLContextClientVersion(2);
-        this.gameView.setRenderer(this.gameRenderer);
-        this.activity.setContentView(this.gameView);
+    public Game(GameData gameData) {
+        this.data = gameData;
     }
 
     public int step() {
-        return rendererData.update();
+        return data.update();
     }
 
-    public RendererData getRendererData() {
-        return rendererData;
-    }
 }

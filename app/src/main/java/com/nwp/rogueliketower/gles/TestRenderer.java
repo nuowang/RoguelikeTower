@@ -55,7 +55,7 @@ public class TestRenderer implements Renderer {
 
     /**
      * Store the view matrix. This can be thought of as our camera. This matrix transforms world space to eye space;
-     * it positions things relative to our eye.
+     * it coordinates things relative to our eye.
      */
     private float[] mViewMatrix = new float[16];
 

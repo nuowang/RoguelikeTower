@@ -25,10 +25,18 @@ import android.support.annotation.RequiresApi;
 import android.view.View;
 
 import com.nwp.rogueliketower.core.Game;
+import com.nwp.rogueliketower.core.GameView;
+import com.nwp.rogueliketower.core.GameData;
 
 @RequiresApi(api = Build.VERSION_CODES.KITKAT)
 public class RoguelikeTower extends Activity {
+    // The core engine of the game. Game itself is stateless.
+    // It gives responses purely based on the state of GameData.
     private Game game;
+    // In charge of storing the state / data of the game.
+    private GameData gameData;
+    // In charge of rendering and listening to motion events.
+    private GameView gameView;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,8 +48,14 @@ public class RoguelikeTower extends Activity {
             View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
         );
 
-        // Game starts automatically on creation.
-        this.game = new Game(this);
+        // Initialize to title screen and preload all textures.
+        this.gameData = new GameData();
+        // Start the game.
+        this.game = new Game(gameData);
+        // Start listening to touch events.
+        this.gameView = new GameView(this, this.game);
+        // Start displaying the game.
+        this.setContentView(this.gameView);
     }
 
     public void onRestart() {
