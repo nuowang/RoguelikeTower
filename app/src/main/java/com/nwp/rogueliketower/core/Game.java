@@ -18,10 +18,14 @@
 
 package com.nwp.rogueliketower.core;
 
+import android.app.Activity;
+
 public class Game {
+    public Activity activity;
     public GameData data;
 
-    public Game(GameData gameData) {
+    public Game(Activity activity, GameData gameData) {
+        this.activity = activity;
         this.data = gameData;
     }
 

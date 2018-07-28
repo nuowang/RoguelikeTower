@@ -47,7 +47,7 @@ public class GameRenderer implements Renderer {
     // Used to pass in tile base color data.
     private int colorHandle;
     // Handle to the tile texture data.
-    private int [] textureHandle;
+    private int textureHandle;
     // Used to pass in tile texture data.
     private int textureUniformHandle;
     // Used to pass in tile texture coordinate data.
@@ -86,12 +86,22 @@ public class GameRenderer implements Renderer {
         textureCoordinateHandle = GLES20.glGetAttribLocation(programHandle, "a_TexCoordinate");
         textureUniformHandle = GLES20.glGetUniformLocation(programHandle, "u_Texture");
 
-        // Pre-load all Textures.
-        // TODO: Check total number of Textures to load against GLES20.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS.
-        textureHandle = loadTextureFromRawResource(activityContext, Textures.names);
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE1);
+        // Additional settings for textures.
+        final int[] textureHandles = new int[1];
+        GLES20.glGenTextures(1, textureHandles, 0);
+        if (textureHandles[0] == 0) {
+            throw new RuntimeException("Error generating texture name.");
+        }
+        // Bind to the texture in OpenGL.
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandles[0]);
+        // Set filtering.
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST);
+        textureHandle = textureHandles[0];
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
         GLES20.glUniform1i(textureUniformHandle, 0);
+
     }
 
     @Override
@@ -136,6 +146,12 @@ public class GameRenderer implements Renderer {
 
         // Draw all tiles.
         for (int i = 0; i < game.data.nTiles; i++) {
+            // Load the bitmap into the bound texture.
+            // TODO: Find a more elegant way to pass in texture sequence.
+            // TODO: Find an elegant way to read sprites.
+            // TODO: Fix texture color.
+            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, game.data.textureBitmaps[game.data.textureID[i]], 0);
+
             GLES20.glDrawArrays(GLES20.GL_TRIANGLES, i*Constants.tileDataSize, Constants.tileDataSize);
         }
     }
@@ -205,44 +221,6 @@ public class GameRenderer implements Renderer {
         }
 
         return programHandle;
-    }
-
-    public static int [] loadTextureFromRawResource(final Context context, final String [] resourceNames) {
-        final int[] textureHandle = new int[resourceNames.length];
-        GLES20.glGenTextures(resourceNames.length, textureHandle, 0);
-
-
-        for (int i = 0; i < resourceNames.length; i++){
-            if (textureHandle[i] == 0) {
-                throw new RuntimeException("Error generating texture name.");
-            }
-
-            // Read the texture.
-            int resourceId = context.getResources().getIdentifier(resourceNames[i],
-                "drawable", context.getPackageName());
-
-            final BitmapFactory.Options options = new BitmapFactory.Options();
-            // No pre-scaling.
-            options.inScaled = false;
-
-            // Read in the resource.
-            final Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourceId, options);
-
-            // Bind to the texture in OpenGL.
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[i]);
-
-            // Set filtering.
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST);
-
-            // Load the bitmap into the bound texture.
-            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
-
-            // Recycle the bitmap, since its data has been loaded into OpenGL.
-            bitmap.recycle();
-        }
-
-        return textureHandle;
     }
 
     public static String loadTextFileFromRawResource(final Context context, final int resourceID) {

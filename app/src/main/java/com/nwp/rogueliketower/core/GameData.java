@@ -18,13 +18,21 @@
 
 package com.nwp.rogueliketower.core;
 
+import android.app.Activity;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.MotionEvent;
+
+import com.nwp.rogueliketower.assets.Textures;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 public class GameData {
+    public Activity activity;
+
     // The current number of displayed tiles.
     public int nTiles;
     // The total number of tiles that the float array can currently hold.
@@ -37,12 +45,17 @@ public class GameData {
     public float[] coordinateData;
     public float[] colorData;
     public float[] textureCoordinateData;
+    public int[] textureID;
+    public Bitmap[] textureBitmaps;
+
     // The buffers to pass the data to.
     public final FloatBuffer coordinates;
     public final FloatBuffer colors;
     public final FloatBuffer textureCoordinates;
 
-    public GameData() {
+    public GameData(Activity activity) {
+        this.activity = activity;
+
         // Renderer data starts with zero tiles.
         this.nTiles = 4;
         // I chose to set the initial max number of tiles to 1000.
@@ -50,12 +63,6 @@ public class GameData {
 
         this.coordinateData = new float[]{
                 // Tile 1.
-//                0.0f, 50.f, 0.0f,
-//                0.0f, 0.0f, 0.0f,
-//                50.f, 50.f, 0.0f,
-//                0.0f, 0.0f, 0.0f,
-//                50.f, 0.0f, 0.0f,
-//                50.f, 50.f, 0.0f,
                 -0.1f,  0.1f*1080 / 1920, 0.0f,
                 -0.1f, -0.1f*1080 / 1920, 0.0f,
                  0.1f,  0.1f*1080 / 1920, 0.0f,
@@ -147,6 +154,12 @@ public class GameData {
                 1.0f, 0.0f
         };
 
+        textureID = new int[] {
+                0, 1, 2, 0
+        };
+        // Pre-load all Textures.
+        textureBitmaps = loadTextureFromRawResource(activity, Textures.names);
+
         // Initialize the buffers.
         coordinates = ByteBuffer.allocateDirect(coordinateData.length * Constants.bytesPerFloat)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
@@ -187,5 +200,24 @@ public class GameData {
 
         coordinates.put(coordinateData).position(0);
         return nTiles;
+    }
+
+    public static Bitmap[] loadTextureFromRawResource(final Context context, final String [] resourceNames) {
+        Bitmap[] bitmaps = new Bitmap[resourceNames.length];
+
+        for (int i = 0; i < resourceNames.length; i++){
+            // Read the texture.
+            int resourceId = context.getResources().getIdentifier(resourceNames[i],
+                    "drawable", context.getPackageName());
+
+            final BitmapFactory.Options options = new BitmapFactory.Options();
+            // No pre-scaling.
+            options.inScaled = false;
+
+            // Read in the resource.
+            bitmaps[i] = BitmapFactory.decodeResource(context.getResources(), resourceId, options);
+        }
+
+        return bitmaps;
     }
 }

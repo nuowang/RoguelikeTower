@@ -49,9 +49,9 @@ public class RoguelikeTower extends Activity {
         );
 
         // Initialize to title screen and preload all textures.
-        this.gameData = new GameData();
+        this.gameData = new GameData(this);
         // Start the game.
-        this.game = new Game(gameData);
+        this.game = new Game(this, gameData);
         // Start listening to touch events.
         this.gameView = new GameView(this, this.game);
         // Start displaying the game.
