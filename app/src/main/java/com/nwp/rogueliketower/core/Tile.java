@@ -18,6 +18,6 @@
 
 package com.nwp.rogueliketower.core;
 
-public class Gizmo {
+public class Tile {
 
 }

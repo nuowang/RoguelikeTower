@@ -19,21 +19,15 @@
 package com.nwp.rogueliketower.gles;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.GLUtils;
 
 import com.nwp.rogueliketower.R;
-import com.nwp.rogueliketower.assets.Textures;
-import com.nwp.rogueliketower.core.Constants;
+import com.nwp.rogueliketower.constants.Parameters;
 import com.nwp.rogueliketower.core.Game;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import com.nwp.rogueliketower.utils.Resources;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -72,8 +66,8 @@ public class GameRenderer implements Renderer {
         GLES20.glEnable(GLES20.GL_TEXTURE_2D);
 
         // Make the rendering program.
-        final String vertexShader = loadTextFileFromRawResource(activityContext, R.raw.vertex_shader);
-        final String fragmentShader = loadTextFileFromRawResource(activityContext, R.raw.fragment_shader);
+        final String vertexShader = Resources.loadTextFileFromRawResource(activityContext, R.raw.vertex_shader);
+        final String fragmentShader = Resources.loadTextFileFromRawResource(activityContext, R.raw.fragment_shader);
         final int vertexShaderHandle = compileShader(GLES20.GL_VERTEX_SHADER, vertexShader);
         final int fragmentShaderHandle = compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader);
         final String[] attributes = {};
@@ -122,25 +116,25 @@ public class GameRenderer implements Renderer {
         //     memoryInfo.getTotalSharedDirty() / 1024.0);
         // System.out.println(memMessage);
 
-        // Move the game forward by one step / frame.
-        game.step();
+        // Move the game forward by one update / frame.
+        game.update();
 
         // Reset the screen.
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
         // Pass in the position information
         game.data.coordinates.position(0);
-        GLES20.glVertexAttribPointer(coordinateHandle, Constants.coordinateDataSize,
+        GLES20.glVertexAttribPointer(coordinateHandle, Parameters.coordinateDataSize,
             GLES20.GL_FLOAT, false, 0, game.data.coordinates);
         GLES20.glEnableVertexAttribArray(coordinateHandle);
         // Pass in the color information
         game.data.colors.position(0);
-        GLES20.glVertexAttribPointer(colorHandle, Constants.colorDataSize,
+        GLES20.glVertexAttribPointer(colorHandle, Parameters.colorDataSize,
             GLES20.GL_FLOAT, false, 0, game.data.colors);
         GLES20.glEnableVertexAttribArray(colorHandle);
         // Pass in the texture coordinate information
         game.data.textureCoordinates.position(0);
-        GLES20.glVertexAttribPointer(textureCoordinateHandle, Constants.textureCoordinateDataSize,
+        GLES20.glVertexAttribPointer(textureCoordinateHandle, Parameters.textureCoordinateDataSize,
             GLES20.GL_FLOAT, false, 0, game.data.textureCoordinates);
         GLES20.glEnableVertexAttribArray(textureCoordinateHandle);
 
@@ -152,7 +146,7 @@ public class GameRenderer implements Renderer {
             // TODO: Fix texture color.
             GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, game.data.textureBitmaps[game.data.textureID[i]], 0);
 
-            GLES20.glDrawArrays(GLES20.GL_TRIANGLES, i*Constants.tileDataSize, Constants.tileDataSize);
+            GLES20.glDrawArrays(GLES20.GL_TRIANGLES, i* Parameters.tileDataSize, Parameters.tileDataSize);
         }
     }
 
@@ -223,22 +217,4 @@ public class GameRenderer implements Renderer {
         return programHandle;
     }
 
-    public static String loadTextFileFromRawResource(final Context context, final int resourceID) {
-        final InputStream inputStream = context.getResources().openRawResource(resourceID);
-        final InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-        final BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-        String line;
-        final StringBuilder body = new StringBuilder();
-
-        try {
-            while ((line = bufferedReader.readLine()) != null) {
-                body.append(line);
-                body.append('\n');
-            }
-        } catch (IOException e) {
-            return null;
-        }
-
-        return body.toString();
-    }
 }

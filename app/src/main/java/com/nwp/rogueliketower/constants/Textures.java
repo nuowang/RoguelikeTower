@@ -1,4 +1,4 @@
-package com.nwp.rogueliketower.assets;
+package com.nwp.rogueliketower.constants;
 
 public class Textures {
     public static final String [] names = {
