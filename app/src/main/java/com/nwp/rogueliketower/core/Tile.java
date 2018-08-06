@@ -19,5 +19,31 @@
 package com.nwp.rogueliketower.core;
 
 public class Tile {
+    public String type = "square";
+    public float [] center = {0, 0, 0};
+    public float radius = 0;
+    public float width = 0;
+    public float height = 0;
+    public boolean visible = false;
+
+    public float [] genGLESCoordinates() {
+        float [] a = {0};
+        return a;
+    }
+
+    public float [] genGLESTextureCoordinate() {
+        float [] a = {0};
+        return a;
+    }
+
+    public float [] genGLESColor() {
+        float [] a = {0};
+        return a;
+    }
+
+    public float [] genGLES() {
+        float [] a = {0};
+        return a;
+    }
 
 }
