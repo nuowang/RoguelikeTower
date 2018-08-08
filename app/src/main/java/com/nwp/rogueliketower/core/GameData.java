@@ -22,16 +22,21 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.view.MotionEvent;
 
-import com.nwp.rogueliketower.constants.Parameters;
-import com.nwp.rogueliketower.constants.Textures;
+import com.nwp.rogueliketower.scenes.DungeonScene;
+import com.nwp.rogueliketower.stores.ParameterStore;
+import com.nwp.rogueliketower.stores.TextureStore;
 import com.nwp.rogueliketower.utils.Resources;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 
 public class GameData {
     public Activity activity;
+    public ArrayList<TileGroup> tileGroups = new ArrayList<>();
+
+
 
     // The current number of displayed tiles.
     public int nTiles;
@@ -55,6 +60,10 @@ public class GameData {
 
     public GameData(Activity activity) {
         this.activity = activity;
+
+        // Generate a dungeon and store its data in this GameData object.
+        // FIXME: Eventually, TitleScene should be generated in the constructor instead.
+        DungeonScene.genDungeon(this);
 
         // Renderer data starts with zero tiles.
         this.nTiles = 4;
@@ -159,19 +168,19 @@ public class GameData {
         textureID = new int[] {
                 0, 1, 2, 0
         };
-        // Pre-load all Textures.
-        textureBitmaps = Resources.loadTexturesFromRawResource(activity, Textures.names);
+        // Pre-load all TextureStore.
+        textureBitmaps = Resources.loadTexturesFromRawResource(activity, TextureStore.names);
 
         // Initialize the buffers.
-        coordinates = ByteBuffer.allocateDirect(coordinateData.length * Parameters.bytesPerFloat)
+        coordinates = ByteBuffer.allocateDirect(coordinateData.length * ParameterStore.bytesPerFloat)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
         coordinates.put(coordinateData).position(0);
 
-        colors = ByteBuffer.allocateDirect(colorData.length * Parameters.bytesPerFloat)
+        colors = ByteBuffer.allocateDirect(colorData.length * ParameterStore.bytesPerFloat)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
         colors.put(colorData).position(0);
 
-        textureCoordinates = ByteBuffer.allocateDirect(textureCoordinateData.length * Parameters.bytesPerFloat)
+        textureCoordinates = ByteBuffer.allocateDirect(textureCoordinateData.length * ParameterStore.bytesPerFloat)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
         textureCoordinates.put(textureCoordinateData).position(0);
 

@@ -1,6 +1,6 @@
-package com.nwp.rogueliketower.constants;
+package com.nwp.rogueliketower.stores;
 
-public class Textures {
+public class TextureStore {
     public static final String [] names = {
         "chris",
         "chris2",

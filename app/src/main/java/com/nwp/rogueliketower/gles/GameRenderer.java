@@ -25,7 +25,7 @@ import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.GLUtils;
 
 import com.nwp.rogueliketower.R;
-import com.nwp.rogueliketower.constants.Parameters;
+import com.nwp.rogueliketower.stores.ParameterStore;
 import com.nwp.rogueliketower.core.Game;
 import com.nwp.rogueliketower.utils.Resources;
 
@@ -124,17 +124,17 @@ public class GameRenderer implements Renderer {
 
         // Pass in the position information
         game.data.coordinates.position(0);
-        GLES20.glVertexAttribPointer(coordinateHandle, Parameters.coordinateDataSize,
+        GLES20.glVertexAttribPointer(coordinateHandle, ParameterStore.coordinateDataSize,
             GLES20.GL_FLOAT, false, 0, game.data.coordinates);
         GLES20.glEnableVertexAttribArray(coordinateHandle);
         // Pass in the color information
         game.data.colors.position(0);
-        GLES20.glVertexAttribPointer(colorHandle, Parameters.colorDataSize,
+        GLES20.glVertexAttribPointer(colorHandle, ParameterStore.colorDataSize,
             GLES20.GL_FLOAT, false, 0, game.data.colors);
         GLES20.glEnableVertexAttribArray(colorHandle);
         // Pass in the texture coordinate information
         game.data.textureCoordinates.position(0);
-        GLES20.glVertexAttribPointer(textureCoordinateHandle, Parameters.textureCoordinateDataSize,
+        GLES20.glVertexAttribPointer(textureCoordinateHandle, ParameterStore.textureCoordinateDataSize,
             GLES20.GL_FLOAT, false, 0, game.data.textureCoordinates);
         GLES20.glEnableVertexAttribArray(textureCoordinateHandle);
 
@@ -146,7 +146,7 @@ public class GameRenderer implements Renderer {
             // TODO: Fix texture color.
             GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, game.data.textureBitmaps[game.data.textureID[i]], 0);
 
-            GLES20.glDrawArrays(GLES20.GL_TRIANGLES, i* Parameters.tileDataSize, Parameters.tileDataSize);
+            GLES20.glDrawArrays(GLES20.GL_TRIANGLES, i* ParameterStore.tileDataSize, ParameterStore.tileDataSize);
         }
     }
 

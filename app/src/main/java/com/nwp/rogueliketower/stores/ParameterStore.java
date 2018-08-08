@@ -1,6 +1,6 @@
-package com.nwp.rogueliketower.constants;
+package com.nwp.rogueliketower.stores;
 
-public class Parameters {
+public class ParameterStore {
     /* Renderer constants. */
     // Number of bytes bytes per float.
     public static final int bytesPerFloat = 4;
