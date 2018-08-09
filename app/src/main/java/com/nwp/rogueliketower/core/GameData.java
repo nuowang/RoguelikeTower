@@ -35,7 +35,7 @@ import java.util.ArrayList;
 public class GameData {
     public Activity activity;
     public ArrayList<TileGroup> tileGroups = new ArrayList<>();
-
+    public TextureStore textureStore;
 
 
     // The current number of displayed tiles.
@@ -60,9 +60,10 @@ public class GameData {
 
     public GameData(Activity activity) {
         this.activity = activity;
+        this.textureStore = new TextureStore(activity);
 
         // Generate a dungeon and store its data in this GameData object.
-        // FIXME: Eventually, TitleScene should be generated in the constructor instead.
+        // FIXME: Eventually, TitleScene should be generated in the constructor insteadf.
         DungeonScene.genDungeon(this);
 
         // Renderer data starts with zero tiles.
@@ -172,15 +173,15 @@ public class GameData {
         textureBitmaps = Resources.loadTexturesFromRawResource(activity, TextureStore.names);
 
         // Initialize the buffers.
-        coordinates = ByteBuffer.allocateDirect(coordinateData.length * ParameterStore.bytesPerFloat)
+        coordinates = ByteBuffer.allocateDirect(coordinateData.length * ParameterStore.BYTES_PER_FLOAT)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
         coordinates.put(coordinateData).position(0);
 
-        colors = ByteBuffer.allocateDirect(colorData.length * ParameterStore.bytesPerFloat)
+        colors = ByteBuffer.allocateDirect(colorData.length * ParameterStore.BYTES_PER_FLOAT)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
         colors.put(colorData).position(0);
 
-        textureCoordinates = ByteBuffer.allocateDirect(textureCoordinateData.length * ParameterStore.bytesPerFloat)
+        textureCoordinates = ByteBuffer.allocateDirect(textureCoordinateData.length * ParameterStore.BYTES_PER_FLOAT)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
         textureCoordinates.put(textureCoordinateData).position(0);
 

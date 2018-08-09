@@ -124,17 +124,17 @@ public class GameRenderer implements Renderer {
 
         // Pass in the position information
         game.data.coordinates.position(0);
-        GLES20.glVertexAttribPointer(coordinateHandle, ParameterStore.coordinateDataSize,
+        GLES20.glVertexAttribPointer(coordinateHandle, ParameterStore.COORDINATE_DATA_SIZE,
             GLES20.GL_FLOAT, false, 0, game.data.coordinates);
         GLES20.glEnableVertexAttribArray(coordinateHandle);
         // Pass in the color information
         game.data.colors.position(0);
-        GLES20.glVertexAttribPointer(colorHandle, ParameterStore.colorDataSize,
+        GLES20.glVertexAttribPointer(colorHandle, ParameterStore.COLOR_DATA_SIZE,
             GLES20.GL_FLOAT, false, 0, game.data.colors);
         GLES20.glEnableVertexAttribArray(colorHandle);
         // Pass in the texture coordinate information
         game.data.textureCoordinates.position(0);
-        GLES20.glVertexAttribPointer(textureCoordinateHandle, ParameterStore.textureCoordinateDataSize,
+        GLES20.glVertexAttribPointer(textureCoordinateHandle, ParameterStore.TEXTURE_COORDINATE_DATA_SIZE,
             GLES20.GL_FLOAT, false, 0, game.data.textureCoordinates);
         GLES20.glEnableVertexAttribArray(textureCoordinateHandle);
 
@@ -146,7 +146,7 @@ public class GameRenderer implements Renderer {
             // TODO: Fix texture color.
             GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, game.data.textureBitmaps[game.data.textureID[i]], 0);
 
-            GLES20.glDrawArrays(GLES20.GL_TRIANGLES, i* ParameterStore.tileDataSize, ParameterStore.tileDataSize);
+            GLES20.glDrawArrays(GLES20.GL_TRIANGLES, i* ParameterStore.TILE_DATA_SIZE, ParameterStore.TILE_DATA_SIZE);
         }
     }
 
