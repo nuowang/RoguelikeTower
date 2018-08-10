@@ -60,10 +60,10 @@ public class GameData {
 
     public GameData(Activity activity) {
         this.activity = activity;
+        // FIXME: TexureStore should really be a singleton.
         this.textureStore = new TextureStore(activity);
-
         // Generate a dungeon and store its data in this GameData object.
-        // FIXME: Eventually, TitleScene should be generated in the constructor insteadf.
+        // FIXME: Eventually, TitleScene should be generated in the constructor instead.
         DungeonScene.genDungeon(this);
 
         // Renderer data starts with zero tiles.

@@ -14,10 +14,6 @@ public class ParameterStore {
     public static final int TILE_DATA_SIZE = 6;
 
     /* Texture parameters. */
-    // Currently, I assume that all textures have the same size.
-    public static final boolean SAME_SIZE_TEXTURE = true;
-    // I assume all textures are squares.
-    public static final boolean SQUARE_TEXTURE = true;
-    // When the texture is a square, it's length/height is assumed to be this value.
-    public static final float TEXTURE_SQUARE_LEN = 32;
+    // Currently, I assume that all frames in textures are squares and are size 32 by 32.
+    public static final boolean SQUARE_32_TEXTURE = true;
 }
