@@ -27,6 +27,7 @@ import android.opengl.GLUtils;
 import com.nwp.rogueliketower.R;
 import com.nwp.rogueliketower.stores.ParameterStore;
 import com.nwp.rogueliketower.core.Game;
+import com.nwp.rogueliketower.stores.TextureStore;
 import com.nwp.rogueliketower.utils.Resources;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -34,7 +35,10 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class GameRenderer implements Renderer {
     private Context activityContext;
+    // Game store the GameData object.
     private Game game;
+    // TextureStore has all of the information about textures.
+    private TextureStore textureStore;
 
     // Used to pass in tile coordinate data.
     private int coordinateHandle;
@@ -52,6 +56,8 @@ public class GameRenderer implements Renderer {
     public GameRenderer(Context activity, Game game) {
         this.activityContext = activity;
         this.game = game;
+        // FIXME: TexureStore should really be a singleton.
+        this.textureStore = new TextureStore(activity);
     }
 
     @Override
@@ -146,7 +152,7 @@ public class GameRenderer implements Renderer {
             // TODO: Fix texture color.
             GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, game.data.textureBitmaps[game.data.textureID[i]], 0);
 
-            GLES20.glDrawArrays(GLES20.GL_TRIANGLES, i* ParameterStore.TILE_DATA_SIZE, ParameterStore.TILE_DATA_SIZE);
+            GLES20.glDrawArrays(GLES20.GL_TRIANGLES, i* ParameterStore.TILE_VERTEX_SIZE, ParameterStore.TILE_VERTEX_SIZE);
         }
     }
 

@@ -21,8 +21,9 @@ package com.nwp.rogueliketower.core;
 import java.util.ArrayList;
 
 public class TileGroup {
-    public ArrayList<Tile> tiles = new ArrayList<>();
-    public ArrayList<TileGroup> tileGroups = new ArrayList<>();
-
+    // ts for tiles.
+    public ArrayList<Tile> ts = new ArrayList<>();
+    // tgs fot tile groups.
+    public ArrayList<TileGroup> tgs = new ArrayList<>();
 }
 

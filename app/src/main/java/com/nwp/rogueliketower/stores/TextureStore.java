@@ -12,44 +12,41 @@ public class TextureStore {
     // Textures in the game are identified by their unique name in plain text.
     public static final String [] names = {
         "chris",
-        "chris2",
-        "carl"
+        "wall",
+        "floor",
+        "carl_walk_right"
     };
-    // The actual texture.
-    public static Bitmap[] bitmaps;
+    // The textures themselves.
+    public Map<String, Bitmap> bitmaps;
     // How many frames each texture contains.
-    public static Map frames;
+    public Map<String, Integer> frames;
 
     public TextureStore(Context context) {
         this.context = context;
+        this.bitmaps = new HashMap<>();
+        this.frames = new HashMap<>();
         loadTexturesFromRawResource();
         genTextureInfo();
     }
 
     private void loadTexturesFromRawResource() {
-        bitmaps = new Bitmap[names.length];
+        // No pre-scaling.
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inScaled = false;
 
-        for (int i = 0; i < names.length; i++){
-            // Read the texture.
-            int resourceId = context.getResources().getIdentifier(names[i],
-                    "drawable", context.getPackageName());
-
-            final BitmapFactory.Options options = new BitmapFactory.Options();
-            // No pre-scaling.
-            options.inScaled = false;
-
-            // Read in the resource.
-            bitmaps[i] = BitmapFactory.decodeResource(context.getResources(), resourceId, options);
+        for (String name : names) {
+            // Get the resource ID.
+            int resourceId = context.getResources().getIdentifier(name, "drawable", context.getPackageName());
+            // Read in and save the resource.
+            bitmaps.put(name, BitmapFactory.decodeResource(context.getResources(), resourceId, options));
         }
     }
 
     private void genTextureInfo() {
-        if(ParameterStore.SQUARE_32_TEXTURE) {
-            frames = new HashMap();
-
-            for(int i=0; i<names.length; i++) {
+        if (ParameterStore.SQUARE_32_TEXTURE) {
+            for (String name : names) {
                 // I assume that all of the frames in the animation are put on one line.
-                frames.put(names[i], bitmaps[i].getWidth() / 32);
+                frames.put(name, bitmaps.get(name).getWidth() / 32);
             }
         }
     }

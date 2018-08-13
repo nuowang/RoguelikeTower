@@ -18,13 +18,27 @@
 
 package com.nwp.rogueliketower.core;
 
+/**
+ *  Tile is the main entity in the game.
+ */
 public class Tile {
+    // TODO: I need to define what types are needed.
     public String type = "square";
+    // Center x, y, z coordinates of the tile. The center calculation depends of the tile's shape.
     public float [] center = {0, 0, 0};
+    // Applicable when the shape of the tile is circle.
     public float radius = 0;
+    // Applicable when the shape of the tile is square or rectangle.
     public float width = 0;
     public float height = 0;
-    public boolean visible = false;
+    // Whether the tile is an active component in the current game.
+    public boolean active = false;
+    // Whether the tile is animated.
+    public boolean animated = false;
+    // The name of the texture that should go onto the tile.
+    public String texture = null;
+    // The frame of the animation that the tile is on.
+    public int frame = 0;
 
     public float [] genGLESCoordinates() {
         float [] a = {0};

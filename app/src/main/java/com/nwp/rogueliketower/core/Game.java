@@ -88,9 +88,8 @@ public class Game {
             }
         }
 
-        data.coordinates.put(data.coordinateData).position(0);
-        data.textureCoordinates.put(data.textureCoordinateData).position(0);
-
+        // Update the buffers for the renderer.
+        data.updateBuffers();
 
     }
 

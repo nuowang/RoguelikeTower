@@ -19,171 +19,98 @@
 package com.nwp.rogueliketower.core;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
 import android.view.MotionEvent;
 
 import com.nwp.rogueliketower.scenes.DungeonScene;
 import com.nwp.rogueliketower.stores.ParameterStore;
-import com.nwp.rogueliketower.stores.TextureStore;
-import com.nwp.rogueliketower.utils.Resources;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
 
 public class GameData {
     public Activity activity;
-    public ArrayList<TileGroup> tileGroups = new ArrayList<>();
-    public TextureStore textureStore;
-
-
-    // The current number of displayed tiles.
-    public int nTiles;
-    // The total number of tiles that the float array can currently hold.
-    // TODO: Make the float array dynamically adjustable.
-    public int maxTiles;
+    // Stores the tiles in the game.
+    public TileGroup tg = new TileGroup();
     // The motion event observed.
     public MotionEvent currentEvent;
-
-    // Data holders.
+    // GLES data holders.
     public float[] coordinateData;
     public float[] colorData;
     public float[] textureCoordinateData;
-    public int[] textureID;
-    public Bitmap[] textureBitmaps;
-
-    // The buffers to pass the data to.
-    public final FloatBuffer coordinates;
-    public final FloatBuffer colors;
-    public final FloatBuffer textureCoordinates;
+    public String[] textureNames;
+    // GLES data buffer.
+    public FloatBuffer coordinates;
+    public FloatBuffer colors;
+    public FloatBuffer textureCoordinates;
 
     public GameData(Activity activity) {
         this.activity = activity;
-        // FIXME: TexureStore should really be a singleton.
-        this.textureStore = new TextureStore(activity);
+
+        // TODO: Decide how to model different groups.
+        // 1: Menu group, z = 4.
+        tg.tgs.add(new TileGroup());
+        // 2: Effects group, z = 3.
+        tg.tgs.add(new TileGroup());
+        // 3: Enemy group, z = 2
+        tg.tgs.add(new TileGroup());
+        // 4. Hero group, z = 1.
+        tg.tgs.add(new TileGroup());
+        // 5. Dungeon group, z = 0.
+        tg.tgs.add(new TileGroup());
+
         // Generate a dungeon and store its data in this GameData object.
         // FIXME: Eventually, TitleScene should be generated in the constructor instead.
         DungeonScene.genDungeon(this);
+    }
 
-        // Renderer data starts with zero tiles.
-        this.nTiles = 4;
-        // I chose to set the initial max number of tiles to 1000.
-        this.maxTiles = 1000;
+    public void updateBuffers() {
+        // TODO: I am not doing any explicit garbage collection for float buffers and float arrays.
+        // TODO: Is there a better way?
 
-        this.coordinateData = new float[]{
-                // Tile 1.
-                -0.1f,  0.1f*1080 / 1920, 0.0f,
-                -0.1f, -0.1f*1080 / 1920, 0.0f,
-                 0.1f,  0.1f*1080 / 1920, 0.0f,
-                -0.1f, -0.1f*1080 / 1920, 0.0f,
-                 0.1f, -0.1f*1080 / 1920, 0.0f,
-                 0.1f,  0.1f*1080 / 1920, 0.0f,
-                // Tile 2.
-                -0.1f,  0.3f*1080 / 1920, 0.0f,
-                -0.1f,  0.1f*1080 / 1920, 0.0f,
-                 0.1f,  0.3f*1080 / 1920, 0.0f,
-                -0.1f,  0.1f*1080 / 1920, 0.0f,
-                 0.1f,  0.1f*1080 / 1920, 0.0f,
-                 0.1f,  0.3f*1080 / 1920, 0.0f,
-                // Tile 3.
-                 0.1f,  0.1f*1080 / 1920, 0.0f,
-                 0.1f, -0.1f*1080 / 1920, 0.0f,
-                 0.3f,  0.1f*1080 / 1920, 0.0f,
-                 0.1f, -0.1f*1080 / 1920, 0.0f,
-                 0.3f, -0.1f*1080 / 1920, 0.0f,
-                 0.3f,  0.1f*1080 / 1920, 0.0f,
-                // Tile 4.
-                 0.1f,  0.3f*1080 / 1920, 0.0f,
-                 0.1f,  0.1f*1080 / 1920, 0.0f,
-                 0.3f,  0.3f*1080 / 1920, 0.0f,
-                 0.1f,  0.1f*1080 / 1920, 0.0f,
-                 0.3f,  0.1f*1080 / 1920, 0.0f,
-                 0.3f,  0.3f*1080 / 1920, 0.0f
-        };
-        for (int i = 0; i< this.coordinateData.length; i++)
-            this.coordinateData[i] *= 2;
+        // Delete inactive tiles first.
+        deleteInactive(tg);
+        // Get the number of active tiles in the game.
+        int nTiles = getNTiles(tg);
 
-        this.colorData = new float[]{
-                // Tile 1 (red).
-                1.0f, 1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 1.0f, 0.0f,
-                // Tile 2 (green).
-                1.0f, 1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 1.0f, 0.0f,
-                // Tile 3 (blue).
-                1.0f, 1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 1.0f, 0.0f,
-                // Tile 4 (yellow).
-                1.0f, 1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 1.0f, 0.0f
-        };
-
-        this.textureCoordinateData = new float[]{
-                // Tile 1.
-                0.0f, 0.0f,
-                0.0f, 1.0f,
-                1.0f, 0.0f,
-                0.0f, 1.0f,
-                1.0f, 1.0f,
-                1.0f, 0.0f,
-                // Tile 2.
-                0.0f, 0.0f,
-                0.0f, 1.0f,
-                1.0f, 0.0f,
-                0.0f, 1.0f,
-                1.0f, 1.0f,
-                1.0f, 0.0f,
-                // Tile 3.
-                0.0f, 0.0f,
-                0.0f, 1.0f,
-                1/4f, 0.0f,
-                0.0f, 1.0f,
-                1/4f, 1.0f,
-                1/4f, 0.0f,
-                // Tile 4.
-                0.0f, 0.0f,
-                0.0f, 1.0f,
-                1.0f, 0.0f,
-                0.0f, 1.0f,
-                1.0f, 1.0f,
-                1.0f, 0.0f
-        };
-
-        textureID = new int[] {
-                0, 1, 2, 0
-        };
-        // Pre-load all TextureStore.
-        textureBitmaps = Resources.loadTexturesFromRawResource(activity, TextureStore.names);
+        // Initialize float arrays.
+        coordinateData = new float[nTiles * ParameterStore.TILE_COORDINATE_DATA_SIZE];
+        colorData = new float[nTiles * ParameterStore.TILE_COLOR_DATA_SIZE];
+        textureCoordinateData = new float[nTiles * ParameterStore.TILE_TEXTURE_COORDINATE_DATA_SIZE];
 
         // Initialize the buffers.
         coordinates = ByteBuffer.allocateDirect(coordinateData.length * ParameterStore.BYTES_PER_FLOAT)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
-        coordinates.put(coordinateData).position(0);
-
         colors = ByteBuffer.allocateDirect(colorData.length * ParameterStore.BYTES_PER_FLOAT)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
-        colors.put(colorData).position(0);
-
         textureCoordinates = ByteBuffer.allocateDirect(textureCoordinateData.length * ParameterStore.BYTES_PER_FLOAT)
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
+
+        // Fill in the float arrays.
+
+        // Attach array to buffers.
+        coordinates.put(coordinateData).position(0);
+        colors.put(colorData).position(0);
         textureCoordinates.put(textureCoordinateData).position(0);
+
+    }
+
+    /**
+     * Recursively delete all of the inactive tiles in a TileGroup.
+     */
+    private static void deleteInactive(TileGroup tg) {
+        // TODO.
+    }
+
+    /**
+     * Recursively sum up the number of tiles in the tileGroups.
+     */
+    private static int getNTiles(TileGroup tg) {
+        int nTiles = tg.ts.size();
+        for (TileGroup tgIn : tg.tgs) {
+            nTiles += tgIn.ts.size() + getNTiles(tgIn);
+        }
+        return nTiles;
 
     }
 
