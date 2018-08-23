@@ -1,6 +1,14 @@
 package com.nwp.rogueliketower.stores;
 
 public class ParameterStore {
+    /* Screen parameter. */
+    // Ratio between the width of the in pixels to the height of the screen in pixels.
+    public static float X_Y_RATIO = 1080 / 1920;
+    // The size of a unit tile in GLES coordinate along x.
+    // A unit tiles is a square tile of "unit length".
+    // All other tiles are compared again unique tile.
+    public static final float UNIT_TILE_X_LEN = 0.02f;
+
     /* Renderer parameters. */
     // Number of bytes bytes per float.
     public static final int BYTES_PER_FLOAT = 4;
@@ -21,8 +29,17 @@ public class ParameterStore {
     public static final boolean SQUARE_32_TEXTURE = true;
 
     /* Dungeon parameters. */
-    // Width of the dungeon in number of tiles.
-    public static final int DUNGEON_WIDTH = 30;
-    // Height of the dungeon in number of tiles.
-    public static final int DUNGEON_HEIGHT = 40;
+    // Width of the floor in number of tiles.
+    public static final int FLOOR_WIDTH = 30;
+    // Height of the floor in number of tiles.
+    public static final int FLOOR_HEIGHT = 40;
+    // Max room width in number of tiles.
+    public static final int ROOM_WIDTH_MAX = 10;
+    // Max room height in number of tiles.
+    public static final int ROOM_HEIGHT_MAX = 10;
+    // Min room width in number of tiles.
+    public static final int ROOM_WIDTH_MIN = 10;
+    // Min room height in number of tiles.
+    public static final int ROOM_HEIGHT_MIN = 10;
+
 }

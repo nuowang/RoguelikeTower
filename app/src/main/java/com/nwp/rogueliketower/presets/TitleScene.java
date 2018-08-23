@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.nwp.rogueliketower.scenes;
+package com.nwp.rogueliketower.presets;
 
 public class TitleScene {
 

@@ -23,15 +23,10 @@ package com.nwp.rogueliketower.core;
  */
 public class Tile {
     // TODO: I need to define what types are needed.
-    public String type = "square";
-    // Center x, y, z coordinates of the tile. The center calculation depends of the tile's shape.
-    public float [] center = {0, 0, 0};
-    // Applicable when the shape of the tile is circle.
-    public float radius = 0;
-    // Applicable when the shape of the tile is square or rectangle.
-    public float width = 0;
-    public float height = 0;
-    // Whether the tile is an active component in the current game.
+    public String type = "NAN";
+    // Center x, y index coordinates of the tile.
+    public int [] crd = {0, 0};
+    // Inactive tiles will be deleted.
     public boolean active = false;
     // Whether the tile is animated.
     public boolean animated = false;

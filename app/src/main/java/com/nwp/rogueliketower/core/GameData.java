@@ -21,7 +21,7 @@ package com.nwp.rogueliketower.core;
 import android.app.Activity;
 import android.view.MotionEvent;
 
-import com.nwp.rogueliketower.scenes.DungeonScene;
+import com.nwp.rogueliketower.presets.DungeonScene;
 import com.nwp.rogueliketower.stores.ParameterStore;
 
 import java.nio.ByteBuffer;

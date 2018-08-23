@@ -1,14 +1,22 @@
-package com.nwp.rogueliketower.scenes;
+package com.nwp.rogueliketower.presets;
 
 import com.nwp.rogueliketower.core.GameData;
-import com.nwp.rogueliketower.core.Tile;
-import com.nwp.rogueliketower.core.TileGroup;
-import com.nwp.rogueliketower.stores.TextureStore;
-import com.nwp.rogueliketower.utils.Resources;
+import com.nwp.rogueliketower.stores.ParameterStore;
 
+/*
+ * For dungeon generation, I use an index coordinate system that starts from index 0.
+ * Each individual component of the dungeon, such as room or hallway, are created in their own
+ * model index coordinate system. They are then rotated and translated to be pieced together.
+ */
 public class DungeonScene {
-    public static void genDungeon(GameData gameData) {
-
+    public static void genDungeon(GameData gd) {
+        // Generate floor.
+        for (int i = 0; i < ParameterStore.FLOOR_WIDTH - 2; i++) {
+            for (int j = 0; j < ParameterStore.FLOOR_HEIGHT - 2; j++) {
+                // gd.tg.tgs[]
+            }
+        }
+        // Generate walls.
     }
 
 
