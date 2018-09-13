@@ -61,7 +61,9 @@ public class GameData {
 
         // Generate a dungeon and store its data in this GameData object.
         // FIXME: Eventually, TitleScene should be generated in the constructor instead.
-        DungeonScene.genDungeon(this);
+        // TODO: Chose from available map IDs based on certain rules.
+        String mapName = "map1";
+        DungeonScene.genDungeon(activity,this, mapName);
     }
 
     public void updateBuffers() {

@@ -1,5 +1,9 @@
 package com.nwp.rogueliketower.presets;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 import com.nwp.rogueliketower.core.GameData;
 import com.nwp.rogueliketower.stores.ParameterStore;
 
@@ -9,7 +13,12 @@ import com.nwp.rogueliketower.stores.ParameterStore;
  * model index coordinate system. They are then rotated and translated to be pieced together.
  */
 public class DungeonScene {
-    public static void genDungeon(GameData gd) {
+    public static void genDungeon(Context context, GameData gd, String mapName) {
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inScaled = false;
+        int resourceId = context.getResources().getIdentifier(mapName, "drawable", context.getPackageName());
+        final Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourceId, options);
+
         // Generate floor.
         for (int i = 0; i < ParameterStore.FLOOR_WIDTH - 2; i++) {
             for (int j = 0; j < ParameterStore.FLOOR_HEIGHT - 2; j++) {
