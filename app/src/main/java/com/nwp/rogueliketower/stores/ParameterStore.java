@@ -30,16 +30,8 @@ public class ParameterStore {
 
     /* Dungeon parameters. */
     // Width of the floor in number of tiles.
-    public static final int FLOOR_WIDTH = 30;
+    public static final int FLOOR_WIDTH = 9;
     // Height of the floor in number of tiles.
-    public static final int FLOOR_HEIGHT = 40;
-    // Max room width in number of tiles.
-    public static final int ROOM_WIDTH_MAX = 10;
-    // Max room height in number of tiles.
-    public static final int ROOM_HEIGHT_MAX = 10;
-    // Min room width in number of tiles.
-    public static final int ROOM_WIDTH_MIN = 10;
-    // Min room height in number of tiles.
-    public static final int ROOM_HEIGHT_MIN = 10;
+    public static final int FLOOR_HEIGHT = 16;
 
 }

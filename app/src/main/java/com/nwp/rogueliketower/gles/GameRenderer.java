@@ -145,15 +145,15 @@ public class GameRenderer implements Renderer {
         GLES20.glEnableVertexAttribArray(textureCoordinateHandle);
 
         // Draw all tiles.
-        for (int i = 0; i < game.data.nTiles; i++) {
-            // Load the bitmap into the bound texture.
-            // TODO: Find a more elegant way to pass in texture sequence.
-            // TODO: Find an elegant way to read sprites.
-            // TODO: Fix texture color.
-            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, game.data.textureBitmaps[game.data.textureID[i]], 0);
-
-            GLES20.glDrawArrays(GLES20.GL_TRIANGLES, i* ParameterStore.TILE_VERTEX_SIZE, ParameterStore.TILE_VERTEX_SIZE);
-        }
+//        for (int i = 0; i < game.data.nTiles; i++) {
+//            // Load the bitmap into the bound texture.
+//            // TODO: Find a more elegant way to pass in texture sequence.
+//            // TODO: Find an elegant way to read sprites.
+//            // TODO: Fix texture color.
+//            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, game.data.textureBitmaps[game.data.textureID[i]], 0);
+//
+//            GLES20.glDrawArrays(GLES20.GL_TRIANGLES, i* ParameterStore.TILE_VERTEX_SIZE, ParameterStore.TILE_VERTEX_SIZE);
+//        }
     }
 
     private int compileShader(final int shaderType, final String shaderSource) {

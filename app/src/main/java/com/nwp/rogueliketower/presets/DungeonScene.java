@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 
 import com.nwp.rogueliketower.core.GameData;
 import com.nwp.rogueliketower.stores.ParameterStore;
+import com.nwp.rogueliketower.stores.TextureStore;
 
 /*
  * For dungeon generation, I use an index coordinate system that starts from index 0.
@@ -20,8 +21,23 @@ public class DungeonScene {
         final Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourceId, options);
 
         // Generate floor.
-        for (int i = 0; i < ParameterStore.FLOOR_WIDTH - 2; i++) {
-            for (int j = 0; j < ParameterStore.FLOOR_HEIGHT - 2; j++) {
+        for (int i = 0; i < ParameterStore.FLOOR_WIDTH ; i++) {
+            for (int j = 0; j < ParameterStore.FLOOR_HEIGHT; j++) {
+                int colorValue = bitmap.getPixel(i, j);
+
+                if (colorValue == TextureStore.colorFloor) {
+
+                }
+                else if (colorValue == TextureStore.colorWall) {
+
+                }
+                else if (colorValue == TextureStore.colorCarl) {
+
+                }
+                else if (colorValue == TextureStore.colorDoor) {
+
+                }
+
                 // gd.tg.tgs[]
             }
         }

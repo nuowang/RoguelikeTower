@@ -21,6 +21,11 @@ public class TextureStore {
     // How many frames each texture contains.
     public Map<String, Integer> frames;
 
+    public static final int colorFloor = -1;        // White.
+    public static final int colorWall = -16777216;  // Black.
+    public static final int colorCarl = -65536;     // Red.
+    public static final int colorDoor = -10077903;  // Brown.
+
     public TextureStore(Context context) {
         this.context = context;
         this.bitmaps = new HashMap<>();
