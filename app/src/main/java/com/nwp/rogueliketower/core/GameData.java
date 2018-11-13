@@ -60,8 +60,8 @@ public class GameData {
         tg.tgs.add(new TileGroup());
 
         // Generate a dungeon and store its data in this GameData object.
-        // FIXME: Eventually, TitleScene should be generated in the constructor instead.
-        // TODO: Chose from available map IDs based on certain rules.
+        // FIXME: Eventually, TitleScene should be generated in this constructor instead.
+        // TODO: Choose from available map IDs based on certain rules.
         String mapName = "map1";
         DungeonScene.genDungeon(activity,this, mapName);
     }
@@ -73,12 +73,7 @@ public class GameData {
         // Delete inactive tiles first.
         deleteInactive(tg);
         // Get the number of active tiles in the game.
-        int nTiles = getNTiles(tg);
-
-        // Initialize float arrays.
-        coordinateData = new float[nTiles * ParameterStore.TILE_COORDINATE_DATA_SIZE];
-        colorData = new float[nTiles * ParameterStore.TILE_COLOR_DATA_SIZE];
-        textureCoordinateData = new float[nTiles * ParameterStore.TILE_TEXTURE_COORDINATE_DATA_SIZE];
+        int nTiles = getNoOfTiles(tg);
 
         // Initialize the buffers.
         coordinates = ByteBuffer.allocateDirect(coordinateData.length * ParameterStore.BYTES_PER_FLOAT)
@@ -89,6 +84,11 @@ public class GameData {
                 .order(ByteOrder.nativeOrder()).asFloatBuffer();
 
         // Fill in the float arrays.
+        float[][] arraysData = genFloatArrayFromTg(tg);
+        coordinateData = arraysData[0];
+        colorData = arraysData[1];
+        textureCoordinateData = arraysData[2];
+        textureNames = genStringArrayFromTg(tg);
 
         // Attach array to buffers.
         coordinates.put(coordinateData).position(0);
@@ -107,13 +107,111 @@ public class GameData {
     /**
      * Recursively sum up the number of tiles in the tileGroups.
      */
-    private static int getNTiles(TileGroup tg) {
+    private static int getNoOfTiles(TileGroup tg) {
         int nTiles = tg.ts.size();
         for (TileGroup tgIn : tg.tgs) {
-            nTiles += tgIn.ts.size() + getNTiles(tgIn);
+            nTiles += tgIn.ts.size() + getNoOfTiles(tgIn);
         }
         return nTiles;
 
+    }
+
+    /**
+     * Recursively fill in arrays.
+     */
+    private static float [][] genFloatArrayFromTg(TileGroup tg) {
+        int nTiles = getNoOfTiles(tg);
+        // Return zero element array if there is no tile.
+        if (nTiles <= 0) {
+            return new float[0][0];
+        }
+
+        float[][] arrays = {new float[nTiles * ParameterStore.TILE_COORDINATE_DATA_SIZE],
+                            new float[nTiles * ParameterStore.TILE_COLOR_DATA_SIZE],
+                            new float[nTiles * ParameterStore.TILE_TEXTURE_COORDINATE_DATA_SIZE]};
+        int currentIndex1 = 0;
+        int currentIndex2 = 0;
+        int currentIndex3 = 0;
+        for (Tile t : tg.ts) {
+            for (float f : t.genGLESCoordinates()) {
+                arrays[0][currentIndex1] = f;
+                currentIndex1++;
+            }
+            for (float f : t.genGLESColor()) {
+                arrays[1][currentIndex2] = f;
+                currentIndex2++;
+            }
+            for (float f : t.genGLESTextureCoordinate()) {
+                arrays[2][currentIndex3] = f;
+                currentIndex3++;
+            }
+        }
+        for (TileGroup tgIn : tg.tgs) {
+            for (Tile t : tgIn.ts) {
+                for (float f : t.genGLESCoordinates()) {
+                    arrays[0][currentIndex1] = f;
+                    currentIndex1++;
+                }
+                for (float f : t.genGLESColor()) {
+                    arrays[1][currentIndex2] = f;
+                    currentIndex2++;
+                }
+                for (float f : t.genGLESTextureCoordinate()) {
+                    arrays[2][currentIndex3] = f;
+                    currentIndex3++;
+                }
+            }
+        }
+        for (TileGroup tgIn : tg.tgs) {
+            float[][] arrays2 = genFloatArrayFromTg(tgIn);
+            for (float f : arrays2[0]) {
+                arrays[0][currentIndex1] = f;
+                currentIndex1++;
+            }
+            for (float f : arrays2[1]) {
+                arrays[1][currentIndex2] = f;
+                currentIndex2++;
+            }
+            for (float f : arrays2[2]) {
+                arrays[2][currentIndex3] = f;
+                currentIndex3++;
+            }
+        }
+
+        return arrays;
+    }
+
+    /**
+     * Recursively fill in arrays.
+     */
+    private static String [] genStringArrayFromTg(TileGroup tg) {
+        int nTiles = getNoOfTiles(tg);
+        // Return zero element array if there is no tile.
+        if (nTiles <= 0) {
+            return new String[0];
+        }
+
+        String[] array = new String[nTiles];
+        int currentIndex = 0;
+        for (Tile t : tg.ts) {
+            array[currentIndex] = t.texture;
+            currentIndex++;
+        }
+        for (TileGroup tgIn : tg.tgs) {
+            for (Tile t : tgIn.ts) {
+                array[currentIndex] = t.texture;
+                currentIndex++;
+            }
+        }
+        for (TileGroup tgIn : tg.tgs) {
+            String[] array2 = genStringArrayFromTg(tgIn);
+            for (String s : array2) {
+                array[currentIndex] = s;
+                currentIndex++;
+            }
+        }
+
+        return array;
     }
 
 }
