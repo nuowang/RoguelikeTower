@@ -47,7 +47,7 @@ public class DungeonScene {
             }
         }
         // Generate wall level tiles.
-        // ... .
+        // ...
         */
 
         // For now, hero only, no dungeon.

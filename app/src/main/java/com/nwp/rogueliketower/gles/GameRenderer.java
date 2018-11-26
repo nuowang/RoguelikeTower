@@ -22,7 +22,6 @@ import android.content.Context;
 
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView.Renderer;
-import android.opengl.GLUtils;
 
 import com.nwp.rogueliketower.R;
 import com.nwp.rogueliketower.stores.ParameterStore;
@@ -112,15 +111,17 @@ public class GameRenderer implements Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl) {
+        /*
         // Check memory leak.
-        // Debug.MemoryInfo memoryInfo = new Debug.MemoryInfo();
-        // Debug.getMemoryInfo(memoryInfo);
-        // String memMessage = String.format(
-        //     "Memory: Pss=%.2f MB, Private=%.2f MB, Shared=%.2f MB",
-        //     memoryInfo.getTotalPss() / 1024.0,
-        //     memoryInfo.getTotalPrivateDirty() / 1024.0,
-        //     memoryInfo.getTotalSharedDirty() / 1024.0);
-        // System.out.println(memMessage);
+        Debug.MemoryInfo memoryInfo = new Debug.MemoryInfo();
+        Debug.getMemoryInfo(memoryInfo);
+        String memMessage = String.format(
+            "Memory: Pss=%.2f MB, Private=%.2f MB, Shared=%.2f MB",
+            memoryInfo.getTotalPss() / 1024.0,
+            memoryInfo.getTotalPrivateDirty() / 1024.0,
+            memoryInfo.getTotalSharedDirty() / 1024.0);
+        System.out.println(memMessage);
+        */
 
         // Move the game forward by one update / frame.
         game.update();
