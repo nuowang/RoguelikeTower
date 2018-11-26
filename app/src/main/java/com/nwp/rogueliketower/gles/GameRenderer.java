@@ -22,11 +22,11 @@ import android.content.Context;
 
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView.Renderer;
+import android.opengl.GLUtils;
 
 import com.nwp.rogueliketower.R;
 import com.nwp.rogueliketower.stores.ParameterStore;
 import com.nwp.rogueliketower.core.Game;
-import com.nwp.rogueliketower.stores.TextureStore;
 import com.nwp.rogueliketower.utils.Resources;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -34,10 +34,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class GameRenderer implements Renderer {
     private Context activityContext;
-    // Game store the GameData object.
     private Game game;
-    // TextureStore has all of the information about textures.
-    private TextureStore textureStore;
 
     // Used to pass in tile coordinate data.
     private int coordinateHandle;
@@ -55,14 +52,12 @@ public class GameRenderer implements Renderer {
     public GameRenderer(Context activity, Game game) {
         this.activityContext = activity;
         this.game = game;
-        // FIXME: TexureStore should really be a singleton.
-        this.textureStore = new TextureStore(activity);
     }
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        // Set the background clear color to black.
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        // Set the background clear color to white.
+        GLES20.glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
         // Cull back faces.
         GLES20.glEnable(GLES20.GL_CULL_FACE);
         // Fragments with smaller z are displayed in front.
@@ -111,17 +106,15 @@ public class GameRenderer implements Renderer {
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        /*
         // Check memory leak.
-        Debug.MemoryInfo memoryInfo = new Debug.MemoryInfo();
-        Debug.getMemoryInfo(memoryInfo);
-        String memMessage = String.format(
-            "Memory: Pss=%.2f MB, Private=%.2f MB, Shared=%.2f MB",
-            memoryInfo.getTotalPss() / 1024.0,
-            memoryInfo.getTotalPrivateDirty() / 1024.0,
-            memoryInfo.getTotalSharedDirty() / 1024.0);
-        System.out.println(memMessage);
-        */
+        // Debug.MemoryInfo memoryInfo = new Debug.MemoryInfo();
+        // Debug.getMemoryInfo(memoryInfo);
+        // String memMessage = String.format(
+        //     "Memory: Pss=%.2f MB, Private=%.2f MB, Shared=%.2f MB",
+        //     memoryInfo.getTotalPss() / 1024.0,
+        //     memoryInfo.getTotalPrivateDirty() / 1024.0,
+        //     memoryInfo.getTotalSharedDirty() / 1024.0);
+        // System.out.println(memMessage);
 
         // Move the game forward by one update / frame.
         game.update();
@@ -132,29 +125,29 @@ public class GameRenderer implements Renderer {
         // Pass in the position information
         game.data.coordinates.position(0);
         GLES20.glVertexAttribPointer(coordinateHandle, ParameterStore.COORDINATE_DATA_SIZE,
-            GLES20.GL_FLOAT, false, 0, game.data.coordinates);
+                GLES20.GL_FLOAT, false, 0, game.data.coordinates);
         GLES20.glEnableVertexAttribArray(coordinateHandle);
         // Pass in the color information
         game.data.colors.position(0);
         GLES20.glVertexAttribPointer(colorHandle, ParameterStore.COLOR_DATA_SIZE,
-            GLES20.GL_FLOAT, false, 0, game.data.colors);
+                GLES20.GL_FLOAT, false, 0, game.data.colors);
         GLES20.glEnableVertexAttribArray(colorHandle);
         // Pass in the texture coordinate information
         game.data.textureCoordinates.position(0);
         GLES20.glVertexAttribPointer(textureCoordinateHandle, ParameterStore.TEXTURE_COORDINATE_DATA_SIZE,
-            GLES20.GL_FLOAT, false, 0, game.data.textureCoordinates);
+                GLES20.GL_FLOAT, false, 0, game.data.textureCoordinates);
         GLES20.glEnableVertexAttribArray(textureCoordinateHandle);
 
         // Draw all tiles.
-//        for (int i = 0; i < game.data.nTiles; i++) {
-//            // Load the bitmap into the bound texture.
-//            // TODO: Find a more elegant way to pass in texture sequence.
-//            // TODO: Find an elegant way to read sprites.
-//            // TODO: Fix texture color.
-//            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, game.data.textureBitmaps[game.data.textureID[i]], 0);
-//
-//            GLES20.glDrawArrays(GLES20.GL_TRIANGLES, i* ParameterStore.TILE_VERTEX_SIZE, ParameterStore.TILE_VERTEX_SIZE);
-//        }
+        for (int i = 0; i < game.data.nTiles; i++) {
+            // Load the bitmap into the bound texture.
+            // TODO: Find a more elegant way to pass in texture sequence.
+            // TODO: Find an elegant way to read sprites.
+            // TODO: Fix texture color.
+            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, game.data.textureBitmaps[game.data.textureID[i]], 0);
+
+            GLES20.glDrawArrays(GLES20.GL_TRIANGLES, i* ParameterStore.TILE_VERTEX_SIZE, ParameterStore.TILE_VERTEX_SIZE);
+        }
     }
 
     private int compileShader(final int shaderType, final String shaderSource) {

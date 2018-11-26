@@ -35,16 +35,18 @@ public class Game {
         float x = 1/10;
         float y = 1/10;
         if (data.currentEvent != null) {
-            x = (data.currentEvent.getRawX() + 1 - 540) / 540;
-            y = (-data.currentEvent.getRawY() - 1 + 960) / 960;
+            x =  (data.currentEvent.getRawX() - data.screenWidth/2 ) / (data.screenWidth/2);
+            y = -(data.currentEvent.getRawY() - data.screenHeight/2) / (data.screenHeight/2);
         }
         float centerx = 0;
         float centery = 0;
-        for (int i = 0; i< data.coordinateData.length / 3; i++) {
-            centerx += data.coordinateData[3*i+0];
+        for (int i = 0; i < 6; i++) {
+            centerx += data.coordinateData[3*i];
+        }
+        for (int i = 0; i < data.coordinateData.length / 3; i++) {
             centery += data.coordinateData[3*i+1];
         }
-        centerx = centerx / (data.coordinateData.length / 3);
+        centerx = centerx / 6;
         centery = centery / (data.coordinateData.length / 3);
         for (int i = 0; i< data.coordinateData.length / 3; i++) {
             data.coordinateData[3*i+0] += (x - centerx)/10;
@@ -53,43 +55,29 @@ public class Game {
 
         counter += 1;
         // Do a move every ? seconds.
-        if (counter % 6 == 0) {
-            if (data.textureCoordinateData[24] == 0.0f) {
-                data.textureCoordinateData[24] = 1/4f;
-                data.textureCoordinateData[26] = 1/4f;
-                data.textureCoordinateData[30] = 1/4f;
-                data.textureCoordinateData[28] = 2/4f;
-                data.textureCoordinateData[32] = 2/4f;
-                data.textureCoordinateData[34] = 2/4f;
-            }
-            else if (data.textureCoordinateData[24] == 1/4f) {
-                data.textureCoordinateData[24] = 2/4f;
-                data.textureCoordinateData[26] = 2/4f;
-                data.textureCoordinateData[30] = 2/4f;
-                data.textureCoordinateData[28] = 3/4f;
-                data.textureCoordinateData[32] = 3/4f;
-                data.textureCoordinateData[34] = 3/4f;
-            }
-            else if (data.textureCoordinateData[24] == 2/4f) {
-                data.textureCoordinateData[24] = 3/4f;
-                data.textureCoordinateData[26] = 3/4f;
-                data.textureCoordinateData[30] = 3/4f;
-                data.textureCoordinateData[28] = 4/4f;
-                data.textureCoordinateData[32] = 4/4f;
-                data.textureCoordinateData[34] = 4/4f;
+        if (counter % 10 == 0) {
+            counter = 0;
+            float numberOfFrames = 8;
+            if (data.textureCoordinateData[0] < (numberOfFrames-1)/numberOfFrames) {
+                data.textureCoordinateData[0] += 1/numberOfFrames;
+                data.textureCoordinateData[2] += 1/numberOfFrames;
+                data.textureCoordinateData[6] += 1/numberOfFrames;
+                data.textureCoordinateData[4] += 1/numberOfFrames;
+                data.textureCoordinateData[8] += 1/numberOfFrames;
+                data.textureCoordinateData[10] += 1/numberOfFrames;
             }
             else {
-                data.textureCoordinateData[24] = 0.0f;
-                data.textureCoordinateData[26] = 0.0f;
-                data.textureCoordinateData[30] = 0.0f;
-                data.textureCoordinateData[28] = 1/4f;
-                data.textureCoordinateData[32] = 1/4f;
-                data.textureCoordinateData[34] = 1/4f;
+                data.textureCoordinateData[0] = 0.0f;
+                data.textureCoordinateData[2] = 0.0f;
+                data.textureCoordinateData[6] = 0.0f;
+                data.textureCoordinateData[4] = 1/numberOfFrames;
+                data.textureCoordinateData[8] = 1/numberOfFrames;
+                data.textureCoordinateData[10] = 1/numberOfFrames;
             }
         }
 
-        // Update the buffers for the renderer.
-        data.updateBuffers();
+        data.coordinates.put(data.coordinateData).position(0);
+        data.textureCoordinates.put(data.textureCoordinateData).position(0);
 
     }
 

@@ -11,10 +11,9 @@ public class TextureStore {
     public Context context;
     // Textures in the game are identified by their unique name in plain text.
     public static final String [] names = {
-        "chris",
         "carl_walk_right",
-        "wall",
-        "floor"
+        "black",
+        "white"
     };
     // The textures themselves.
     public Map<String, Bitmap> bitmaps;
