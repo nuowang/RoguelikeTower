@@ -45,6 +45,8 @@ public class GameData {
     public int maxTiles;
     // The motion event observed.
     public MotionEvent currentEvent;
+    public float currentEventX = -999;
+    public float currentEventY = -999;
 
     // Data holders.
     public float[] coordinateData;

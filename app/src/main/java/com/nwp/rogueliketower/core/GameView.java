@@ -45,6 +45,8 @@ public class GameView extends GLSurfaceView {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         game.data.currentEvent = event;
+        game.data.currentEventX =  (game.data.currentEvent.getRawX() - game.data.screenWidth/2 ) / (game.data.screenWidth/2);
+        game.data.currentEventY = -(game.data.currentEvent.getRawY() - game.data.screenHeight/2) / (game.data.screenHeight/2);
         return true;
     }
 

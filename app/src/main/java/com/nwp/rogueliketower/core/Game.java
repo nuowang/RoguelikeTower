@@ -32,25 +32,30 @@ public class Game {
     }
 
     public void update() {
-        float x = 1/10;
-        float y = 1/10;
-        if (data.currentEvent != null) {
-            x =  (data.currentEvent.getRawX() - data.screenWidth/2 ) / (data.screenWidth/2);
-            y = -(data.currentEvent.getRawY() - data.screenHeight/2) / (data.screenHeight/2);
-        }
-        float centerx = 0;
-        float centery = 0;
-        for (int i = 0; i < 6; i++) {
-            centerx += data.coordinateData[3*i];
-        }
-        for (int i = 0; i < data.coordinateData.length / 3; i++) {
-            centery += data.coordinateData[3*i+1];
-        }
-        centerx = centerx / 6;
-        centery = centery / (data.coordinateData.length / 3);
-        for (int i = 0; i< data.coordinateData.length / 3; i++) {
-            data.coordinateData[3*i+0] += (x - centerx)/10;
-            data.coordinateData[3*i+1] += (y - centery)/10;
+        float x = data.currentEventX;
+        float y = data.currentEventY;
+
+        if (x > -999) {
+            float centerx = 0;
+            float centery = 0;
+            for (int i = 0; i < 6; i++) {
+                centerx += data.coordinateData[3 * i];
+            }
+            for (int i = 0; i < data.coordinateData.length / 3; i++) {
+                centery += data.coordinateData[3 * i + 1];
+            }
+            centerx = centerx / 6;
+            centery = centery / (data.coordinateData.length / 3);
+
+            float xDist = (x - centerx) * (float) data.screenWidth;
+            float yDist = (y - centery) * (float) data.screenHeight;
+            float distance = (float) Math.sqrt(xDist * xDist + yDist * yDist);
+            if (distance > 10) {
+                for (int i = 0; i < data.coordinateData.length / 3; i++) {
+                    data.coordinateData[3 * i + 0] += 10 * xDist / distance / ((float) data.screenWidth);
+                    data.coordinateData[3 * i + 1] += 10 * yDist / distance / ((float) data.screenHeight);
+                }
+            }
         }
 
         counter += 1;
