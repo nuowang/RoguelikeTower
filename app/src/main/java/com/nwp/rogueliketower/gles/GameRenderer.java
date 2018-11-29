@@ -64,6 +64,9 @@ public class GameRenderer implements Renderer {
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
         // Enable texture mapping.
         GLES20.glEnable(GLES20.GL_TEXTURE_2D);
+        // Enable transparent texture background.
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+        GLES20.glEnable(GLES20.GL_BLEND);
 
         // Make the rendering program.
         final String vertexShader = Resources.loadTextFileFromRawResource(activityContext, R.raw.vertex_shader);

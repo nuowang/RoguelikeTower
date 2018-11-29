@@ -56,6 +56,14 @@ public class Game {
                     data.coordinateData[3 * i + 1] += 10 * yDist / distance / ((float) data.screenHeight);
                 }
             }
+            if (x < centerx) {
+                // 0 is Carl's ID. 1 is "carl_walk_left".
+                data.textureID[0] = 1;
+            }
+            else {
+                // 0 is Carl's ID. 1 is "carl_walk_right".
+                data.textureID[0] = 0;
+            }
         }
 
         counter += 1;

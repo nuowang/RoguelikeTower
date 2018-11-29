@@ -178,7 +178,7 @@ public class GameData {
         };
 
         textureID = new int[] {
-                0, 2, 2, 2
+                0, 3, 3, 3
         };
         // Pre-load all Textures.
         textureBitmaps = Resources.loadTexturesFromRawResource(activity, TextureStore.names);

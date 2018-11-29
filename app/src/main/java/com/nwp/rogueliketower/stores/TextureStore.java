@@ -12,6 +12,7 @@ public class TextureStore {
     // Textures in the game are identified by their unique name in plain text.
     public static final String [] names = {
         "carl_walk_right",
+        "carl_walk_left",
         "black",
         "white"
     };
