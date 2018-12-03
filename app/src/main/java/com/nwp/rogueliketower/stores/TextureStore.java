@@ -11,10 +11,11 @@ public class TextureStore {
     public Context context;
     // Textures in the game are identified by their unique name in plain text.
     public static final String [] names = {
-        "carl_walk_right",
-        "carl_walk_left",
-        "black",
-        "white"
+        "carl_walk_right",  // 0.
+        "carl_walk_left",   // 1.
+        "black",            // 2.
+        "white",            // 3.
+        "background"        // 4.
     };
     // The textures themselves.
     public Map<String, Bitmap> bitmaps;
@@ -38,6 +39,7 @@ public class TextureStore {
         // No pre-scaling.
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inScaled = false;
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
 
         for (String name : names) {
             // Get the resource ID.

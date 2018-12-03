@@ -147,6 +147,14 @@ public class GameRenderer implements Renderer {
             // TODO: Find a more elegant way to pass in texture sequence.
             // TODO: Find an elegant way to read sprites.
             // TODO: Fix texture color.
+//            GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0,
+//                    GLES20.GL_RGBA,
+//                    32,
+//                    32,
+//                    0,
+//                    GLES20.GL_RGBA,
+//                    GLES20.GL_UNSIGNED_BYTE,
+//                    game.data.textureBitmaps[game.data.textureID[i]]);
             GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, game.data.textureBitmaps[game.data.textureID[i]], 0);
 
             GLES20.glDrawArrays(GLES20.GL_TRIANGLES, i* ParameterStore.TILE_VERTEX_SIZE, ParameterStore.TILE_VERTEX_SIZE);

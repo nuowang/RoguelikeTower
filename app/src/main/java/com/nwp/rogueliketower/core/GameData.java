@@ -80,30 +80,34 @@ public class GameData {
         display.getRealSize(size);
         this.screenWidth = size.x;
         this.screenHeight = size.y;
-        this.screenAspectRatio = (float) this.screenWidth / (float) this.screenHeight;;
+        this.screenAspectRatio = (float) this.screenWidth / (float) this.screenHeight;
+
+        // Backround height.
+        // 800 is the height of the original texture.
+        float bg_h = (float) this.screenHeight / 800 * 600 / (float) this.screenWidth;
 
         this.coordinateData = new float[]{
                 // Tile 1.
-                -0.1f,  0.3f * screenAspectRatio, 0.0f,
-                -0.1f,  0.1f * screenAspectRatio, 0.0f,
-                 0.1f,  0.3f * screenAspectRatio, 0.0f,
-                -0.1f,  0.1f * screenAspectRatio, 0.0f,
-                 0.1f,  0.1f * screenAspectRatio, 0.0f,
-                 0.1f,  0.3f * screenAspectRatio, 0.0f,
+                -1.0f     ,  1.0f, 0.1f,
+                -1.0f     , -1.0f, 0.1f,
+                 2*bg_h-1f,  1.0f, 0.1f,
+                -1.0f     , -1.0f, 0.1f,
+                 2*bg_h-1f, -1.0f, 0.1f,
+                 2*bg_h-1f,  1.0f, 0.1f,
                 // Tile 2.
-                -0.1f,  0.1f * screenAspectRatio, 0.1f,
-                -0.1f, -0.1f * screenAspectRatio, 0.1f,
-                 0.1f,  0.1f * screenAspectRatio, 0.1f,
-                -0.1f, -0.1f * screenAspectRatio, 0.1f,
-                 0.1f, -0.1f * screenAspectRatio, 0.1f,
-                 0.1f,  0.1f * screenAspectRatio, 0.1f,
+                    2*bg_h-1f ,  1.0f, 0.1f,
+                    2*bg_h-1f , -1.0f, 0.1f,
+                 2*(2*bg_h-1f),  1.0f, 0.1f,
+                    2*bg_h-1f , -1.0f, 0.1f,
+                 2*(2*bg_h-1f), -1.0f, 0.1f,
+                 2*(2*bg_h-1f),  1.0f, 0.1f,
                 // Tile 3.
-                 0.1f,  0.1f * screenAspectRatio, 0.0f,
-                 0.1f, -0.1f * screenAspectRatio, 0.0f,
-                 0.3f,  0.1f * screenAspectRatio, 0.0f,
-                 0.1f, -0.1f * screenAspectRatio, 0.0f,
-                 0.3f, -0.1f * screenAspectRatio, 0.0f,
-                 0.3f,  0.1f * screenAspectRatio, 0.0f,
+                -0.7f,  -1.2f * screenAspectRatio, 0.0f,
+                -0.7f,  -1.6f * screenAspectRatio, 0.0f,
+                -0.3f,  -1.2f * screenAspectRatio, 0.0f,
+                -0.7f,  -1.6f * screenAspectRatio, 0.0f,
+                -0.3f,  -1.6f * screenAspectRatio, 0.0f,
+                -0.3f,  -1.2f * screenAspectRatio, 0.0f,
                 // Tile 4.
                  0.1f,  0.3f * screenAspectRatio, 0.0f,
                  0.1f,  0.1f * screenAspectRatio, 0.0f,
@@ -112,8 +116,6 @@ public class GameData {
                  0.3f,  0.1f * screenAspectRatio, 0.0f,
                  0.3f,  0.3f * screenAspectRatio, 0.0f
         };
-        for (int i = 0; i< this.coordinateData.length; i++)
-            this.coordinateData[i] *= 2;
 
         this.colorData = new float[]{
                 // Tile 1.
@@ -124,19 +126,19 @@ public class GameData {
                 1.0f, 1.0f, 1.0f, 1.0f,
                 1.0f, 1.0f, 1.0f, 1.0f,
                 // Tile 2.
-                1.0f, 1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 1.0f, 0.0f,
+                1.0f, 1.0f, 1.0f, 1.0f,
+                1.0f, 1.0f, 1.0f, 1.0f,
+                1.0f, 1.0f, 1.0f, 1.0f,
+                1.0f, 1.0f, 1.0f, 1.0f,
+                1.0f, 1.0f, 1.0f, 1.0f,
+                1.0f, 1.0f, 1.0f, 1.0f,
                 // Tile 3.
-                1.0f, 1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 1.0f, 0.0f,
+                1.0f, 1.0f, 1.0f, 1.0f,
+                1.0f, 1.0f, 1.0f, 1.0f,
+                1.0f, 1.0f, 1.0f, 1.0f,
+                1.0f, 1.0f, 1.0f, 1.0f,
+                1.0f, 1.0f, 1.0f, 1.0f,
+                1.0f, 1.0f, 1.0f, 1.0f,
                 // Tile 4.
                 1.0f, 1.0f, 1.0f, 0.0f,
                 1.0f, 1.0f, 1.0f, 0.0f,
@@ -148,12 +150,12 @@ public class GameData {
 
         this.textureCoordinateData = new float[]{
                 // Tile 1.
-                0.0f, 0.0f,  // Triangle 1
-                0.0f, 1.0f,  // Triangle 1
-                1/8f, 0.0f,  // Triangle 1
-                0.0f, 1.0f,  // Triangle 2
-                1/8f, 1.0f,  // Triangle 2
-                1/8f, 0.0f,  // Triangle 2
+                0.0f, 0.0f,
+                0.0f, 1.0f,
+                1.0f, 0.0f,
+                0.0f, 1.0f,
+                1.0f, 1.0f,
+                1.0f, 0.0f,
                 // Tile 2.
                 0.0f, 0.0f,
                 0.0f, 1.0f,
@@ -162,12 +164,12 @@ public class GameData {
                 1.0f, 1.0f,
                 1.0f, 0.0f,
                 // Tile 3.
-                0.0f, 0.0f,
-                0.0f, 1.0f,
-                1.0f, 0.0f,
-                0.0f, 1.0f,
-                1.0f, 1.0f,
-                1.0f, 0.0f,
+                0.0f, 0.0f,  // Triangle 1
+                0.0f, 1.0f,  // Triangle 1
+                1/8f, 0.0f,  // Triangle 1
+                0.0f, 1.0f,  // Triangle 2
+                1/8f, 1.0f,  // Triangle 2
+                1/8f, 0.0f,  // Triangle 2
                 // Tile 4.
                 0.0f, 0.0f,
                 0.0f, 1.0f,
@@ -178,7 +180,7 @@ public class GameData {
         };
 
         textureID = new int[] {
-                0, 3, 3, 3
+                4, 4, 0, 3
         };
         // Pre-load all Textures.
         textureBitmaps = Resources.loadTexturesFromRawResource(activity, TextureStore.names);
